@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-black text-white;
+  }
+}
+
+@layer utilities {
+  .backdrop-blur-xl {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+}
+
+@layer components {
+  .form-input {
+    @apply w-full bg-white/90 text-gray-800 px-4 py-3 rounded-xl
+           border border-gray-200 focus:outline-none focus:border-[#f32b2b]/50 
+           focus:ring-2 focus:ring-[#f32b2b]/20 transition-all duration-300
+           hover:border-gray-300;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-[#f32b2b] text-white rounded-xl
+           hover:bg-[#ff4b4b] transition-all duration-300
+           disabled:opacity-50 disabled:cursor-not-allowed
+           font-medium;
+  }
+
+  .btn-outline {
+    @apply px-4 py-2 border border-gray-200 rounded-xl
+           hover:border-[#f32b2b]/50 hover:bg-[#f32b2b]/5 
+           transition-all duration-300 flex items-center justify-center gap-2
+           text-gray-700 font-medium bg-white/90
+           hover:text-[#f32b2b];
+  }
+
+  .social-icon {
+    @apply w-5 h-5 text-gray-600 group-hover:text-[#f32b2b] transition-colors;
+  }
+
+  .form-container {
+    @apply w-full backdrop-blur-xl bg-white/90 border border-gray-200 
+           rounded-2xl p-8 shadow-lg;
+  }
+} 

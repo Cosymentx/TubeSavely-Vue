@@ -10,7 +10,7 @@ export interface PaymentMethod {
 
 // 预定义金额选项
 export interface PaymentAmount {
-  points: number
+  credits: number
   price: number
   amount?: number
   discount?: number
@@ -18,7 +18,7 @@ export interface PaymentAmount {
 
 // 基础支付信息
 export interface PaymentBase {
-  points: number
+  credits: number
   amount: number
   payment_method: PaymentMethodType
 }
@@ -31,7 +31,7 @@ export interface PaymentCreate extends PaymentBase {
 export interface PaymentResponse {
   order_id: string
   amount: number
-  points: number
+  credits: number
   payment_url: string
 }
 

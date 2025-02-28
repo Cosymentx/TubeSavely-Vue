@@ -14,7 +14,7 @@
             <DialogPanel
               class="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-2xl p-8 text-left align-middle shadow-xl transition-all dark:border dark:border-gray-700/30">
               <DialogTitle as="h3" class="text-xl font-medium leading-6 text-gray-900 dark:text-white mb-6">
-                Recharge Points
+                Recharge Credits
               </DialogTitle>
 
               <!-- Amount Selection -->
@@ -23,14 +23,14 @@
                   Select Amount
                 </label>
                 <div class="grid grid-cols-3 gap-4">
-                  <button v-for="amount in predefinedAmounts" :key="amount.points" @click="selectedAmount = amount"
+                  <button v-for="amount in predefinedAmounts" :key="amount.credits" @click="selectedAmount = amount"
                     :class="[
                       'p-4 rounded-lg border text-center transition-all duration-200 hover:scale-105',
-                      selectedAmount?.points === amount.points
+                      selectedAmount?.credits === amount.credits
                         ? 'border-[#f32b2b] bg-[#f32b2b]/10 text-[#f32b2b] shadow-md'
                         : 'border-gray-200 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
                     ]">
-                    <div class="text-lg font-medium">{{ amount.points }} Points</div>
+                    <div class="text-lg font-medium">{{ amount.credits }} Credits</div>
                     <div class="text-sm text-gray-500 dark:text-gray-400">${{ amount.price }}</div>
                   </button>
                 </div>
@@ -123,9 +123,9 @@ const isLoading = ref(false)
 const error = ref('')
 
 const predefinedAmounts: PaymentAmount[] = [
-  { points: 100, price: 10 },
-  { points: 500, price: 45 },
-  { points: 1000, price: 85 }
+  { credits: 100, price: 10 },
+  { credits: 500, price: 45 },
+  { credits: 1000, price: 85 }
 ]
 
 const paymentMethods: PaymentMethod[] = [
@@ -182,7 +182,7 @@ const handleRecharge = async () => {
     isLoading.value = true
     const response = await paymentStore.createPayment(
       selectedAmount.value.price,
-      selectedAmount.value.points,
+      selectedAmount.value.credits,
       selectedPaymentMethod.value.id as PaymentMethodType
     )
 

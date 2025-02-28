@@ -25,7 +25,7 @@ export interface VideoService {
 export interface UserService {
   getProfile(): ApiResult<User>
   updateProfile(data: Partial<User>): ApiResult<User>
-  deductPoints(points: number): ApiResult<User>
+  deductCredits(credits: number): ApiResult<User>
 }
 
 export interface FeedbackService {

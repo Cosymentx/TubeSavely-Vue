@@ -36,23 +36,23 @@ export const createUserService = (api: AxiosInstance) => ({
     })
   },
 
-  getPoints: (): ApiResult<number> => {
-    return api.get('/points')
+  getCredits: (): ApiResult<number> => {
+    return api.get('/credits')
   },
 
   getDownloadHistory: (page = 1, limit = 10) => {
     return api.get(`/users/downloads?page=${page}&limit=${limit}`)
   },
 
-  getPointHistory: (skip = 0, limit = 10) => {
-    return api.get(`/points/history?skip=${skip}&limit=${limit}`)
+  getCreditsHistory: (skip = 0, limit = 10) => {
+    return api.get(`/credits/history?skip=${skip}&limit=${limit}`)
   },
 
-  addPoints: (points: number, action: string, description?: string) => {
-    return api.post('/points/add', { points, action, description })
+  addCredits: (credits: number, action: string, description?: string) => {
+    return api.post('/credits/add', { credits, action, description })
   },
 
-  deductPoints: (points: number, action: string, description?: string) => {
-    return api.post('/points/deduct', { points, action, description })
+  deductCredits: (credits: number, action: string, description?: string) => {
+    return api.post('/credits/deduct', { credits, action, description })
   }
 })

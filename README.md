@@ -21,96 +21,96 @@
 ```
 frontend/
 ├── src/
-│   ├── assets/           # 静态资源
-│   │   ├── styles/      # 样式文件
-│   │   │   ├── global.css     # 全局样式
-│   │   │   └── tailwind.css   # Tailwind 基础样式
-│   │   └── main.css           # 主样式入口
-│   ├── components/       # 通用组件
-│   │   ├── common/      # 基础组件
-│   │   │   ├── Button.vue         # 按钮组件
-│   │   │   ├── Input.vue          # 输入框组件
-│   │   │   ├── Toast.vue          # 提示组件
-│   │   │   ├── Loading.vue        # 加载组件
-│   │   │   ├── Error.vue          # 错误提示
+│   ├── assets/                        # 静态资源
+│   │   ├── styles/                    # 样式文件
+│   │   │   ├── global.css             # 全局样式
+│   │   │   └── tailwind.css           # Tailwind 基础样式
+│   │   └── main.css                   # 主样式入口
+│   ├── components/                    # 通用组件
+│   │   ├── common/                    # 基础组件
+│   │   │   ├── Button.vue             # 按钮组件
+│   │   │   ├── Input.vue              # 输入框组件
+│   │   │   ├── Toast.vue              # 提示组件
+│   │   │   ├── Loading.vue            # 加载组件
+│   │   │   ├── Error.vue              # 错误提示
 │   │   │   └── SupportedServices.vue  # 支持的服务列表
-│   │   ├── layout/      # 布局组件
-│   │   │   ├── Navigation.vue     # 导航栏
-│   │   │   └── Footer.vue         # 页脚
-│   │   ├── user/        # 用户相关组件
-│   │   │   ├── UserMenu.vue       # 用户菜单
-│   │   │   ├── UserAvatar.vue     # 用户头像
-│   │   │   ├── RechargeDialog.vue # 充值对话框
-│   │   │   └── EditProfileDialog.vue # 编辑资料对话框
-│   │   ├── payment/     # 支付相关组件
-│   │   │   ├── PaymentMethods.vue # 支付方式选择
-│   │   │   ├── PaymentQRCode.vue  # 支付二维码
-│   │   │   └── PaymentStatus.vue  # 支付状态
-│   │   ├── task/        # 任务相关组件
-│   │   │   ├── TaskList.vue       # 任务列表
-│   │   │   ├── TaskCard.vue       # 任务卡片
-│   │   │   └── TaskProgress.vue   # 任务进度
-│   │   ├── VideoInfoCard.vue      # 视频信息卡片
-│   │   ├── BackgroundEffect.vue   # 背景效果
-│   │   └── logo.vue               # 网站 Logo
-│   ├── composables/      # 组合式函数
-│   │   ├── useApi.ts            # API 调用 Hook
-│   │   ├── usePayment.ts        # 支付相关 Hook
-│   │   ├── useTask.ts           # 任务相关 Hook
-│   │   └── usePoints.ts         # 积分相关 Hook
-│   ├── router/          # 路由配置
-│   ├── services/        # API 服务
-│   │   ├── api.ts          # Axios 实例配置
-│   │   ├── interceptors.ts # 请求/响应拦截器
-│   │   ├── auth.ts         # 认证服务
-│   │   ├── user.ts         # 用户服务
-│   │   ├── video.ts        # 视频服务
-│   │   ├── payment.ts      # 支付服务
-│   │   ├── task.ts         # 任务服务
-│   │   └── feedback.ts     # 反馈服务
-│   ├── stores/          # Pinia 状态管理
-│   │   ├── user.ts         # 用户状态
-│   │   ├── video.ts        # 视频状态
-│   │   ├── payment.ts      # 支付状态
-│   │   ├── task.ts         # 任务状态
-│   │   ├── theme.ts        # 主题状态
-│   │   └── toast.ts        # 通知状态
-│   ├── types/           # TypeScript 类型定义
-│   │   ├── api.ts          # API 相关类型
-│   │   ├── services.ts     # 服务接口定义
-│   │   ├── user.ts         # 用户相关类型
-│   │   ├── video.ts        # 视频相关类型
-│   │   ├── payment.ts      # 支付相关类型
-│   │   ├── task.ts         # 任务相关类型
-│   │   └── feedback.ts     # 反馈相关类型
-│   ├── utils/           # 工具函数
-│   │   ├── validation.ts   # 表单验证
-│   │   ├── format.ts       # 格式化工具
-│   │   ├── storage.ts      # 本地存储
-│   │   ├── clipboard.ts    # 剪贴板操作
-│   │   └── error.ts        # 错误处理
-│   ├── views/           # 页面组件
-│   │   ├── Home.vue        # 首页（视频下载）
-│   │   ├── Login.vue       # 登录页面
-│   │   ├── Register.vue    # 注册页面
-│   │   ├── Profile.vue     # 用户资料
-│   │   ├── Settings.vue    # 用户设置
-│   │   ├── Points.vue      # 积分中心
-│   │   ├── Tasks.vue       # 任务中心
-│   │   ├── Contact.vue     # 联系/反馈
-│   │   ├── About.vue       # 关于我们
-│   │   ├── Terms.vue       # 服务条款
-│   │   ├── Admin.vue       # 管理面板
-│   │   └── NotFound.vue    # 404 页面
-│   ├── App.vue          # 根组件
-│   ├── main.ts          # 应用入口
-│   └── env.d.ts         # 环境变量类型
-├── public/              # 公共资源
-├── index.html           # 入口 HTML
-├── vite.config.ts       # Vite 配置
-├── tsconfig.json        # TypeScript 配置
-├── postcss.config.js    # PostCSS 配置
-└── tailwind.config.js   # Tailwind 配置
+│   │   ├── layout/                    # 布局组件
+│   │   │   ├── Navigation.vue         # 导航栏
+│   │   │   └── Footer.vue             # 页脚
+│   │   ├── user/                      # 用户相关组件
+│   │   │   ├── UserMenu.vue           # 用户菜单
+│   │   │   ├── UserAvatar.vue         # 用户头像
+│   │   │   ├── RechargeDialog.vue     # 充值对话框
+│   │   │   └── EditProfileDialog.vue  # 编辑资料对话框
+│   │   ├── payment/                   # 支付相关组件
+│   │   │   ├── PaymentMethods.vue     # 支付方式选择
+│   │   │   ├── PaymentQRCode.vue      # 支付二维码
+│   │   │   └── PaymentStatus.vue      # 支付状态
+│   │   ├── task/                      # 任务相关组件
+│   │   │   ├── TaskList.vue           # 任务列表
+│   │   │   ├── TaskCard.vue           # 任务卡片
+│   │   │   └── TaskProgress.vue       # 任务进度
+│   │   ├── VideoInfoCard.vue          # 视频信息卡片
+│   │   ├── BackgroundEffect.vue       # 背景效果
+│   │   └── logo.vue                   # 网站 Logo
+│   ├── composables/                   # 组合式函数
+│   │   ├── useApi.ts                  # API 调用 Hook
+│   │   ├── usePayment.ts              # 支付相关 Hook
+│   │   ├── useTask.ts                 # 任务相关 Hook
+│   │   └── useCredit.ts               # 积分相关 Hook
+│   ├── router/                        # 路由配置
+│   ├── services/                      # API 服务
+│   │   ├── api.ts                     # Axios 实例配置
+│   │   ├── interceptors.ts            # 请求/响应拦截器
+│   │   ├── auth.ts                    # 认证服务
+│   │   ├── user.ts                    # 用户服务
+│   │   ├── video.ts                   # 视频服务
+│   │   ├── payment.ts                 # 支付服务
+│   │   ├── task.ts                    # 任务服务
+│   │   └── feedback.ts                # 反馈服务
+│   ├── stores/                        # Pinia 状态管理
+│   │   ├── user.ts                    # 用户状态
+│   │   ├── video.ts                   # 视频状态
+│   │   ├── payment.ts                 # 支付状态
+│   │   ├── task.ts                    # 任务状态
+│   │   ├── theme.ts                   # 主题状态
+│   │   └── toast.ts                   # 通知状态
+│   ├── types/                         # TypeScript 类型定义
+│   │   ├── api.ts                     # API 相关类型
+│   │   ├── services.ts                # 服务接口定义
+│   │   ├── user.ts                    # 用户相关类型
+│   │   ├── video.ts                   # 视频相关类型
+│   │   ├── payment.ts                 # 支付相关类型
+│   │   ├── task.ts                    # 任务相关类型
+│   │   └── feedback.ts                # 反馈相关类型
+│   ├── utils/                         # 工具函数
+│   │   ├── validation.ts              # 表单验证
+│   │   ├── format.ts                  # 格式化工具
+│   │   ├── storage.ts                 # 本地存储
+│   │   ├── clipboard.ts               # 剪贴板操作
+│   │   └── error.ts                   # 错误处理
+│   ├── views/                         # 页面组件
+│   │   ├── Home.vue                   # 首页（视频下载）
+│   │   ├── Login.vue                  # 登录页面
+│   │   ├── Register.vue               # 注册页面
+│   │   ├── Profile.vue                # 用户资料
+│   │   ├── Settings.vue               # 用户设置
+│   │   ├── Credits.vue                # 积分中心
+│   │   ├── Tasks.vue                  # 任务中心
+│   │   ├── Contact.vue                # 联系/反馈
+│   │   ├── About.vue                  # 关于我们
+│   │   ├── Terms.vue                  # 服务条款
+│   │   ├── Admin.vue                  # 管理面板
+│   │   └── NotFound.vue               # 404 页面
+│   ├── App.vue                        # 根组件
+│   ├── main.ts                        # 应用入口
+│   └── env.d.ts                       # 环境变量类型
+├── public/                            # 公共资源
+├── index.html                         # 入口 HTML
+├── vite.config.ts                     # Vite 配置
+├── tsconfig.json                      # TypeScript 配置
+├── postcss.config.js                  # PostCSS 配置
+└── tailwind.config.js                 # Tailwind 配置
 ```
 
 ## 主要功能模块

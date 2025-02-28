@@ -209,10 +209,10 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const deductPoints = async (points: number) => {
+  const deductCredits = async (credits: number) => {
     try {
       isLoading.value = true
-      const response = await api.post('/points/deduct', { points })
+      const response = await api.post('/credits/deduct', { credits })
       return response.data
     } catch (err) {
       const message = getErrorMessage(err)
@@ -223,8 +223,8 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const getPoints = () => {
-    return localUser.value?.points || 0
+  const getCredits = () => {
+    return localUser.value?.credits || 0
   }
 
   const isLoggedIn = computed(() => {
@@ -246,7 +246,7 @@ export const useUserStore = defineStore('user', () => {
     updateProfile,
     updatePassword,
     updateAvatar,
-    deductPoints,
-    getPoints
+    deductCredits,
+    getCredits
   }
 })

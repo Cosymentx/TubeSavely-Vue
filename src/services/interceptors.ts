@@ -34,8 +34,24 @@ export const createInterceptors = (api: AxiosInstance, toastStore: ToastStore) =
   api.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('token')
+      // 对所有非登录请求添加认证头
       if (token && !config.url?.includes('/auth/login')) {
+        // 确保 headers 对象存在
+        config.headers = config.headers || {}
+        // 设置认证头
         config.headers.Authorization = `Bearer ${token}`
+        
+        // 设置默认的请求配置
+        config.maxRedirects = config.maxRedirects || 5
+        config.withCredentials = true
+        
+        // 确保重定向请求也携带认证信息
+        if (!config.beforeRedirect) {
+          config.beforeRedirect = (options, { headers }) => {
+            options.headers = { ...headers, Authorization: `Bearer ${token}` }
+            options.withCredentials = true
+          }
+        }
       }
       return config
     },

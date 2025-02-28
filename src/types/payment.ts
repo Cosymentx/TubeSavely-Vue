@@ -43,6 +43,7 @@ export interface Payment extends PaymentBase {
   status: PaymentStatus
   transaction_id?: string
   error_message?: string
+  credits_cost: number
   created_at: string
   updated_at: string
   paid_at?: string

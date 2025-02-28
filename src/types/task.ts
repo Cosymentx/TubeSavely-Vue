@@ -7,7 +7,7 @@ export interface TaskBase {
   input_url?: string
   input_params?: Record<string, any>
   output_format?: string
-  points_cost: number
+  credits_cost: number
 }
 
 export interface TaskCreate extends TaskBase {

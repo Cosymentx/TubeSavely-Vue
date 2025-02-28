@@ -87,8 +87,8 @@ export const useVideoStore = defineStore('video', () => {
       return
     }
 
-    if (userStore.getPoints() < 3) {
-      toastStore.showToast('Insufficient points. You need 3 points to download.', 'error')
+    if (userStore.getCredits() < 3) {
+      toastStore.showToast('Insufficient credits. You need 3 credits to download.', 'error')
       return
     }
 
@@ -96,7 +96,7 @@ export const useVideoStore = defineStore('video', () => {
 
     try {
       downloadStatus.value = 'downloading'
-      await userStore.deductPoints(3)
+      await userStore.deductCredits(3)
       downloadProgress.value = 0
 
       // 获取选中格式的URL

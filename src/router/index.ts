@@ -9,7 +9,7 @@ import Terms from '../views/Terms.vue'
 import Profile from '../views/Profile.vue'
 import Settings from '../views/Settings.vue'
 import Platforms from '../views/Platforms.vue'
-import PointsHistory from '../views/PointsHistory.vue'
+import CreditsHistory from '../views/CreditsHistory.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,9 +65,9 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/points-history',
-      name: 'points-history',
-      component: PointsHistory,
+      path: '/credits-history',
+      name: 'credits-history',
+      component: CreditsHistory,
       meta: { requiresAuth: true }
     },
     {

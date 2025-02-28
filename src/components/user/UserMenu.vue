@@ -11,7 +11,7 @@
       <div class="text-left">
         <span class="text-gray-600 dark:text-gray-300">{{ user.username }}</span>
         <div class="text-sm text-gray-500 dark:text-gray-400">
-          Points: {{ user.points }}
+          Credits: {{ user.credits }}
         </div>
       </div>
       <Icon 

@@ -24,13 +24,13 @@ export const usePaymentStore = defineStore('payment', () => {
   const api = apiService.axiosInstance
   const paymentService = createPaymentService(api)
 
-  const createPayment = async (amount: number, points: number, payment_method: PaymentMethodType) => {
+  const createPayment = async (amount: number, credits: number, payment_method: PaymentMethodType) => {
     try {
       isLoading.value = true
       error.value = null
       const response = await paymentService.createPayment({
         amount,
-        points,
+        credits,
         payment_method
       })
 

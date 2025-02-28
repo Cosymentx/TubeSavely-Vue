@@ -12,7 +12,7 @@ export const createPaymentService = (api: AxiosInstance) => ({
   createPayment: (data: PaymentCreate): ApiResult<PaymentResponse> => {
     return api.post('/payments/create', null, {
       params: {
-        points: data.points,
+        credits: data.credits,
         payment_method: data.payment_method
       }
     })

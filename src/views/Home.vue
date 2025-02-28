@@ -393,8 +393,8 @@ const handleDownload = () => {
     return
   }
 
-  if (userStore.getPoints() < 3) {
-    toastStore.showToast('Insufficient points. You need 3 points to download.', 'error')
+  if (userStore.getCredits() < 3) {
+    toastStore.showToast('Insufficient credits. You need 3 credits to download.', 'error')
     return
   }
 
@@ -404,7 +404,7 @@ const handleDownload = () => {
   window.open(selectedFormat.value.url, '_blank')
 
   // 扣除积分
-  userStore.deductPoints(3)
+  userStore.deductCredits(3)
   toastStore.showToast('Download started!', 'success')
 }
 </script>

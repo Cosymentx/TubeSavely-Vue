@@ -31,19 +31,19 @@
           </div>
         </div>
 
-        <!-- Points Info -->
+        <!-- Credits Info -->
         <div class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm mb-8">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Points History</h3>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Credits History</h3>
             <div class="flex items-center space-x-3">
               <button
                 @click="openRechargeDialog"
                 class="btn-primary"
               >
-                Recharge Points
+                Recharge Credits
               </button>
               <RouterLink 
-                to="/points-history"
+                to="/credits-history"
                 class="text-sm text-[#f32b2b] hover:underline"
               >
                 View All
@@ -58,12 +58,12 @@
                 </div>
                 <div>
                   <p class="text-gray-800 dark:text-white font-medium">Current Balance</p>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">Each video download costs 3 points</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Each video download costs 3 credits</p>
                 </div>
               </div>
               <div class="text-right">
-                <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ userStore.localUser?.points || 0 }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">points</p>
+                <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ userStore.localUser?.credits || 0 }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">credits</p>
               </div>
             </div>
           </div>
@@ -230,9 +230,9 @@ const closeRechargeDialog = () => {
 }
 
 const handleRechargeSuccess = async () => {
-  // Refresh user data to get updated points
+  // Refresh user data to get updated credits
   await userStore.fetchProfile()
-  toastStore.showToast('Points recharged successfully!', 'success')
+  toastStore.showToast('Credits recharged successfully!', 'success')
 }
 
 const formatDate = (date: string | undefined) => {

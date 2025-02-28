@@ -1,7 +1,7 @@
 export interface UserBase {
   username: string
   email: string
-  points: number
+  credits: number
   is_superuser: boolean
   avatar?: string
   bio?: string
@@ -21,7 +21,7 @@ export interface UserUpdate {
   username?: string
   email?: string
   password?: string
-  points?: number
+  credits?: number
   avatar?: string | FormData
   bio?: string
 }

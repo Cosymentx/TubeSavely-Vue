@@ -5,16 +5,16 @@ import type { FeedbackService } from '../types/services'
 
 export const createFeedbackService = (api: AxiosInstance): FeedbackService => ({
   submit: (data: FeedbackCreate): ApiResult<Feedback> => {
-    return api.post('/feedback', data)
+    return api.post('/feedback/', data)
   },
 
   getHistory: (): ApiResult<Feedback[]> => {
     return api.get('/feedback/history')
   },
 
-  getById: (id: string): ApiResult<Feedback> => {
+  getById(id) {
     return api.get(`/feedback/${id}`)
-  }
+  },
 })
 
 export default createFeedbackService

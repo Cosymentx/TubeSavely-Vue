@@ -27,7 +27,7 @@
     },
     
     /* Type Definitions */
-    "types": ["vite/client", "vue-router", "pinia", "node", "vue-toastification"],
+    "types": ["vite/client", "vue-router", "pinia", "node"],
     "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],

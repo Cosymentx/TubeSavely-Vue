@@ -147,7 +147,7 @@
                 ]">
                     <div class="flex flex-col items-start gap-1">
                       <div class="flex items-center justify-between w-full">
-                        <span class="font-semibold">{{ format.format_note || `${format.height}p` }}</span>
+                        <span class="font-semibold">{{ format.format_note || `${format.height||720}p` }}</span>
                         <span class="text-xs opacity-75">{{ format.ext.toUpperCase() }}</span>
                       </div>
                       <div class="flex flex-col text-xs opacity-75 text-left">
@@ -212,7 +212,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted,nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useVideoStore } from '../stores/video'
 import { useUserStore } from '../stores/user'
@@ -288,7 +288,6 @@ const selectedFormat = ref<VideoFormat | null>(null)
 const selectFormat = (format: VideoFormat) => {
   selectedFormat.value = format
 }
-
 const handleParse = async () => {
   if (videoStore.videoUrl) {
     // 验证URL格式
@@ -305,6 +304,11 @@ const handleParse = async () => {
       return
     }
     await videoStore.parseVideo()
+    // 等待 filteredFormats 计算完成后再选择第一个格式
+    await nextTick()
+    if (filteredFormats.value && filteredFormats.value.length > 0) {
+      selectFormat(filteredFormats.value[0])
+    }
   }
 }
 
@@ -359,12 +363,10 @@ const filteredFormats = computed(() => {
     .filter(format => {
       // 根据选择的格式类型进行筛选
       if (videoStore.format === 'auto') {
-        // 自动模式：选择有直接下载URL且为mp4格式的选项，排除m3u8格式
+        // 自动模式：选择同时包含视频和音频的mp4格式，排除m3u8格式
         return format.ext === 'mp4' &&
           format.url &&
-          !format.url.includes('.m3u8') &&
-          format.height &&
-          format.width
+          !format.url.includes('.m3u8')
       } else if (videoStore.format === 'audio') {
         // 音频模式：选择只有音频的格式
         return format.acodec !== 'none' && format.vcodec === 'none'

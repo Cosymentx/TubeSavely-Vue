@@ -4,16 +4,15 @@
 
 ## 技术栈
 
-- Vue 3.3.4 (Composition API)
-- TypeScript 5.0.2
-- Vite 4.4.0
-- Pinia 2.3.0
+- Vue 3.5.13 (Composition API)
+- TypeScript 5.8.2
+- Vite 6.0.9
+- Pinia 3.0.1
 - Vue Router 4.5.0
-- Tailwind CSS 3.3.2
-- Element Plus 2.3.8
-- Headless UI 1.7.15
+- Tailwind CSS 3.3.5
+- Headless UI 1.7.23
 - VueUse 10.1.2
-- Axios 1.7.9
+- Axios 1.8.1
 - Iconify 4.3.0
 
 ## 项目结构

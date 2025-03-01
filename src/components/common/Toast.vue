@@ -9,7 +9,7 @@
   >
     <div 
       v-if="show"
-      class="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl shadow-lg min-w-[200px] text-center"
+      class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] px-4 py-2 rounded-xl shadow-lg min-w-[200px] text-center"
       :class="{
         'bg-green-500 text-white': type === 'success',
         'bg-red-500 text-white': type === 'error',

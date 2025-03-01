@@ -126,7 +126,7 @@ export const useUserStore = defineStore('user', () => {
         const { access_token, user: userData } = result.data
         localStorage.setItem('token', access_token)
         setUser(userData)
-        toastStore.showToast('Social login successful!', 'success')
+        toastStore.showToast('Login successful!', 'success')
         return true
       } else {
         error.value = result.msg || 'Login failed'

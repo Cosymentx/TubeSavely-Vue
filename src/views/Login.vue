@@ -161,7 +161,7 @@ const handleSocialLogin = async (provider: 'google' | 'github' | 'wechat') => {
   } catch (err) {
     oauthState.value = 'error'
     oauthMessage.value = 'Failed to initiate login'
-    toastStore.showToast('Social login failed', 'error')
+    toastStore.showToast('Login failed', 'error')
   } finally {
     isProcessingOAuth.value = false
   }

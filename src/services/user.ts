@@ -23,7 +23,7 @@ export const createUserService = (api: AxiosInstance) => ({
   },
 
   updatePassword: (data: UserPasswordUpdate): ApiResult<void> => {
-    return api.put('/users//profile', data)
+    return api.put('/users/profile', data)
   },
 
   updateAvatar: (file: File): ApiResult<void> => {
@@ -53,6 +53,6 @@ export const createUserService = (api: AxiosInstance) => ({
   },
 
   deductCredits: (credits: number, action: string, description?: string) => {
-    return api.post('/credits/deduct', { credits, action, description })
+    return api.post('/credits/deduct/', { credits, action, description })
   }
 })

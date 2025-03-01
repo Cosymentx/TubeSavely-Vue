@@ -16,8 +16,6 @@ export const createInterceptors = (api: AxiosInstance, toastStore: ToastStore) =
         config.headers.Authorization = `Bearer ${token}`
       }
 
-      console.log(config)
-
       // 全局请求配置
       config.maxRedirects = 0  // 禁止自动重定向
       config.withCredentials = true  // 允许跨域请求携带凭证
@@ -36,7 +34,6 @@ export const createInterceptors = (api: AxiosInstance, toastStore: ToastStore) =
   // Response interceptor
   api.interceptors.response.use(
     (response) => {
-      console.log(response)
       return response
     },
     (error) => {
@@ -46,7 +43,7 @@ export const createInterceptors = (api: AxiosInstance, toastStore: ToastStore) =
         // Handle 401 unauthorized error
         if (error.response.status === 401) {
           localStorage.removeItem('token')
-          
+
           errorMessage = error.response.data?.detail || error.response.data?.message || 'Session expired, please login again'
         } else {
           errorMessage = error.response.data?.detail || error.response.data?.message || 'Server error'

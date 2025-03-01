@@ -23,7 +23,7 @@ export const createUserService = (api: AxiosInstance) => ({
   },
 
   updatePassword: (data: UserPasswordUpdate): ApiResult<void> => {
-    return api.put('/users/password', data)
+    return api.put('/users//profile', data)
   },
 
   updateAvatar: (file: File): ApiResult<void> => {

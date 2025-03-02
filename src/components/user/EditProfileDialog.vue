@@ -14,12 +14,12 @@
             <DialogPanel
               class="w-full max-w-md overflow-hidden rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-2xl p-6 text-left align-middle shadow-xl dark:border-gray-700/30 will-change-transform">
               <DialogTitle as="h3" class="text-lg font-semibold leading-6 text-gray-900 dark:text-white mb-4">
-                Edit Profile
+                Change Password
               </DialogTitle>
 
               <div class="space-y-6">
                 <!-- Avatar Section -->
-                <div class="flex items-center space-x-4 will-change-transform transform-none">
+                <!-- <div class="flex items-center space-x-4 will-change-transform transform-none">
                   <UserAvatar :username="profile.username" :avatar="profile.avatar" size="md"
                     class="w-16 h-16 will-change-transform transform-none" />
                   <div>
@@ -31,14 +31,14 @@
                       JPG or PNG, max 2MB
                     </p>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Password Section -->
                 <div class="space-y-4">
                   <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <!-- <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {{ hasPassword ? 'Change Password' : 'Set Password' }}
-                    </h4>
+                    </h4> -->
                   </div>
 
                   <!-- 已设置密码的用户显示修改密码表单 -->

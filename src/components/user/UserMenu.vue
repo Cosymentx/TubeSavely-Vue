@@ -6,6 +6,7 @@
     >
       <UserAvatar 
         :username="user.username"
+        :avatar="user.avatar"
         size="sm"
       />
       <div class="text-left">

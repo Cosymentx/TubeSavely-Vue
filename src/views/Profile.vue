@@ -46,9 +46,9 @@
               class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center">
-                  <Icon :icon="credit.type === 1 ? 'ri:add-line' : 'ri:subtract-line'" :class="[
+                  <Icon :icon="credit.credits >= 0? 'ri:add-line' : 'ri:subtract-line'" :class="[
                     'w-5 h-5',
-                    credit.type === 1 ? 'text-green-500' : 'text-[#f32b2b]'
+                    credit.credits >= 0 ? 'text-green-500' : 'text-[#f32b2b]'
                   ]" />
                 </div>
                 <div>
@@ -60,9 +60,9 @@
               <div class="text-right">
                 <p :class="[
                   'text-lg font-semibold',
-                  credit.type === 1 ? 'text-green-600' : 'text-[#f32b2b]'
+                  credit.credits >= 0 ? 'text-green-600' : 'text-[#f32b2b]'
                 ]">
-                  {{ credit.type === 1 ? '+' : '' }}{{ credit.credits }}
+                  {{ credit.credits >= 0 ? '+' : '' }}{{ credit.credits }}
                 </p>
                 <p class="text-sm text-gray-500 whitespace-nowrap">Balance: {{ userStore.getCredits() }}</p>
               </div>

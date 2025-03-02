@@ -26,21 +26,21 @@
             class="bg-white/50 dark:bg-gray-800/50 p-4 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-2xl font-medium text-gray-800 dark:text-white">{{ credit.action }}</h3>
+                <h4 class="text-2xl font-medium text-gray-800 dark:text-white">{{ credit.action }}</h4>
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ credit.description }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(credit.created_at) }}</p>
               </div>
               <div :class="[
-                'text-3xl font-semibold',
-                credit.type === 1 ? 'text-green-600 dark:text-green-400' : 'text-red-600 text-[#f32b2b]'
+                'text-1xl font-semibold',
+                credit.credits >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 text-[#f32b2b]'
               ]">
-                {{ credit.type === 1 ? '+' : '' }}{{ credit.credits }}
+                {{ credit.credits >= 0 ? '+' : '' }}{{ credit.credits }}
               </div>
             </div>
           </div>
 
           <!-- Pagination -->
-          <div v-if="paging.total >= 20" class="flex justify-center mt-6 space-x-2">
+          <div v-if="paging.total >= 5" class="flex justify-center mt-6 space-x-2">
             <button class="btn-secondary px-4 py-2" :disabled="currentPage === 1" @click="loadPage(currentPage - 1)">
               Previous
             </button>
@@ -74,7 +74,7 @@ import type { Paging } from '@/types/paging'
 const userStore = useUserStore()
 const toastStore = useToastStore()
 const currentPage = ref(0)
-const pageSize = 20
+const pageSize = 5
 const paging = ref<Paging<CreditBase>>({
   current: 0,
   records: [],
@@ -87,7 +87,7 @@ const loadPage = async (page: number) => {
   try {
     const result = await userStore.getCreditHistory(page, pageSize)
     paging.value = result!!
-    currentPage.value = page == 0 ? 0 : currentPage.value + 1
+    currentPage.value = page
   } catch (error) {
     toastStore.showToast('Failed to load credits history', 'error')
   }

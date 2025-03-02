@@ -7,6 +7,7 @@ export interface UserBase {
   bio?: string
   oauth_provider?: string
   oauth_id?: string
+  has_password: boolean
 }
 
 export interface UserCreate {

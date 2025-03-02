@@ -197,9 +197,25 @@ export const useUserStore = defineStore('user', () => {
   const updatePassword = async (params: UserPasswordUpdate) => {
     try {
       isLoading.value = true
-      await userService.updatePassword(params)
-      toastStore.showToast('Password updated successfully', 'success')
-      return true
+      let result
+      if(localUser.value?.has_password) {
+        result = await userService.updatePassword(params)
+      } else {
+        result = await userService.setPassword(params)
+      }
+
+      if (result?.data?.code === 200) {
+        fetchProfile()
+        if(localUser.value?.has_password) {
+          toastStore.showToast('Password updated successfully', 'success')
+        } else {
+          toastStore.showToast('Password set successfully', 'success')
+        }
+        return true
+      } else {
+        toastStore.showToast(result?.data?.msg || 'Password update failed', 'error')
+        return false
+      }
     } catch (err) {
       const message = getErrorMessage(err)
       toastStore.showToast(message, 'error')

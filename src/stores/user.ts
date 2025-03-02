@@ -3,9 +3,12 @@ import { ref, computed } from 'vue'
 import { useApi } from '../composables/useApi'
 import { createAuthService } from '../services/auth'
 import { createUserService } from '../services/user'
+import { createCreditsService } from '../services/credits'
+
 import type { User, UserLogin, UserCreate, UserUpdate, UserPasswordUpdate } from '../types/user'
 import { useToastStore } from './toast'
 import { getErrorMessage } from '../utils/error'
+
 
 export const useUserStore = defineStore('user', () => {
   const localUser = ref<User | null>(null)
@@ -16,6 +19,7 @@ export const useUserStore = defineStore('user', () => {
   const api = apiService.axiosInstance
   const authService = createAuthService(api)
   const userService = createUserService(api)
+  const creditsService = createCreditsService(api)
 
   // 初始化状态
   const initState = () => {
@@ -198,7 +202,7 @@ export const useUserStore = defineStore('user', () => {
     try {
       isLoading.value = true
       let result
-      if(localUser.value?.has_password) {
+      if (localUser.value?.has_password) {
         result = await userService.updatePassword(params)
       } else {
         result = await userService.setPassword(params)
@@ -206,7 +210,7 @@ export const useUserStore = defineStore('user', () => {
 
       if (result?.data?.code === 200) {
         fetchProfile()
-        if(localUser.value?.has_password) {
+        if (localUser.value?.has_password) {
           toastStore.showToast('Password updated successfully', 'success')
         } else {
           toastStore.showToast('Password set successfully', 'success')
@@ -247,6 +251,16 @@ export const useUserStore = defineStore('user', () => {
     return !!localUser.value && !!localStorage.getItem('token')
   })
 
+  const getCreditHistory = async (page: number = 0, size: number = 10) => {
+    try {
+      const response = await creditsService.getCreditHistory(page, size)
+      return response.data.data
+    } catch (error) {
+      console.error('Failed to fetch credit history:', error)
+      throw error
+    }
+  }
+
   return {
     localUser,
     isLoading,
@@ -263,6 +277,7 @@ export const useUserStore = defineStore('user', () => {
     updatePassword,
     updateAvatar,
     deductCredits,
-    getCredits
+    getCredits,
+    getCreditHistory
   }
 })

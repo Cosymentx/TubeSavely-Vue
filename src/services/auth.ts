@@ -1,4 +1,4 @@
-import type { UserLogin, UserCreate, UserPasswordUpdate, AuthResponse } from '../types/user'
+import type { UserLogin, UserCreate, AuthResponse } from '../types/user'
 import type { ApiResult } from '../types/api'
 import type { AxiosInstance } from 'axios'
 

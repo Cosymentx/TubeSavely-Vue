@@ -25,7 +25,8 @@
                 @click="openEditProfile"
                 class="btn-secondary"
               >
-                Edit Profile
+                <!-- Edit Profile -->
+                 Change Password
               </button>
             </div>
           </div>

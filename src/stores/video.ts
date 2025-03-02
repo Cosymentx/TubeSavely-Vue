@@ -68,6 +68,8 @@ export const useVideoStore = defineStore('video', () => {
             format.acodec !== 'none' &&
             format.height
           ).sort((a: any, b: any) => parseInt(b.label) - parseInt(a.label))
+
+          userStore.fetchProfile()
         }
       } else {
         toastStore.showToast(response.data.msg, 'error')

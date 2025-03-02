@@ -1,70 +1,70 @@
 <template>
   <div class="relative min-h-screen overflow-hidden bg-white dark:bg-gray-900">
     <BackgroundEffect />
-    
+
     <div class="relative flex flex-col items-center min-h-screen max-w-4xl mx-auto px-4 py-16">
       <Navigation />
 
-      <div class="w-full backdrop-blur-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg mt-5">
+      <div
+        class="w-full backdrop-blur-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg mt-5">
         <!-- Profile Header -->
         <div class="flex items-center space-x-6 mb-8">
-          <UserAvatar 
-            :username="userStore.localUser?.username || ''"
-            :avatar="userStore.localUser?.avatar||''"
-            size="md"
-            class="w-20 h-20"
-          />
+          <UserAvatar :username="userStore.localUser?.username || ''" :avatar="userStore.localUser?.avatar || ''"
+            size="md" class="w-20 h-20" />
           <div class="flex-1">
             <div class="flex items-center justify-between">
               <div>
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ userStore.localUser?.username }}</h1>
                 <p class="text-gray-600 dark:text-gray-300">{{ userStore.localUser?.email }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Member since {{ formatDate(userStore.localUser?.created_at) }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Member since {{
+                  formatDate(userStore.localUser?.created_at) }}</p>
               </div>
-              <button
-                @click="openEditProfile"
-                class="btn-secondary"
-              >
+              <button @click="openEditProfile" class="btn-secondary">
                 <!-- Edit Profile -->
-                 Change Password
+                Change Password
               </button>
             </div>
           </div>
         </div>
 
         <!-- Credits Info -->
-        <div class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm mb-8">
+        <div
+          class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm mb-8">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Credits History</h3>
             <div class="flex items-center space-x-3">
-              <button
-                @click="openRechargeDialog"
-                class="btn-primary"
-              >
+              <button @click="openRechargeDialog" class="btn-primary">
                 Recharge Credits
               </button>
-              <RouterLink 
-                to="/credits-history"
-                class="text-sm text-[#f32b2b] hover:underline"
-              >
+              <RouterLink to="/credits-history" class="text-sm text-[#f32b2b] hover:underline">
                 View All
               </RouterLink>
             </div>
           </div>
           <div class="space-y-4">
-            <div class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
+            <div v-for="credit in recentCreditsHistory" :key="credit.id"
+              class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center">
-                  <Icon icon="ri:coins-line" class="w-5 h-5 text-[#f32b2b]" />
+                  <Icon :icon="credit.type === 1 ? 'ri:add-line' : 'ri:subtract-line'" :class="[
+                    'w-5 h-5',
+                    credit.type === 1 ? 'text-green-500' : 'text-[#f32b2b]'
+                  ]" />
                 </div>
                 <div>
-                  <p class="text-gray-800 dark:text-white font-medium">Current Balance</p>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">Each video download costs 3 credits</p>
+                  <p class="text-gray-800 dark:text-white font-medium">{{ credit.action }}</p>
+                  <p class="text-gray-800 dark:text-white text-sm">{{ credit.description }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(credit.created_at) }}</p>
                 </div>
               </div>
               <div class="text-right">
-                <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ userStore.localUser?.credits || 0 }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">credits</p>
+                <p :class="[
+                  'text-lg font-semibold',
+                  credit.type === 1 ? 'text-green-600' : 'text-[#f32b2b]'
+                ]">
+                  {{ credit.type === 1 ? '+' : '' }}{{ credit.credits }}
+                </p>
+                <p class="text-sm text-gray-500 whitespace-nowrap">Balance: {{ userStore.getCredits() }}</p>
               </div>
             </div>
           </div>
@@ -72,43 +72,45 @@
 
         <!-- Profile Stats -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
+          <div
+            class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Downloads</h3>
             <p class="text-3xl font-bold text-[#f32b2b]">{{ stats.downloads }}</p>
           </div>
-          <div class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
+          <div
+            class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Saved Videos</h3>
             <p class="text-3xl font-bold text-[#f32b2b]">{{ stats.savedVideos }}</p>
           </div>
-          <div class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
+          <div
+            class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Total Size</h3>
             <p class="text-3xl font-bold text-[#f32b2b]">{{ formatSize(stats.totalSize) }}</p>
           </div>
         </div>
 
         <!-- Download History -->
-        <div class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
+        <div
+          class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Download History</h3>
-            <RouterLink 
-              to="/download-history"
-              class="text-sm text-[#f32b2b] hover:underline"
-            >
+            <RouterLink to="/download-history" class="text-sm text-[#f32b2b] hover:underline">
               View All
             </RouterLink>
           </div>
           <div class="space-y-4">
-            <div v-for="download in downloadHistory" :key="download.id" class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
+            <div v-for="download in downloadHistory" :key="download.id"
+              class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center">
-                  <Icon :icon="download.status === 'completed' ? 'ri:check-line' : download.status === 'failed' ? 'ri:close-line' : 'ri:download-line'" 
-                       :class="[
-                         'w-5 h-5',
-                         download.status === 'completed' ? 'text-green-500' : 
-                         download.status === 'failed' ? 'text-[#f32b2b]' : 
-                         'text-[#f32b2b]'
-                       ]"
-                  />
+                  <Icon
+                    :icon="download.status === 'completed' ? 'ri:check-line' : download.status === 'failed' ? 'ri:close-line' : 'ri:download-line'"
+                    :class="[
+                      'w-5 h-5',
+                      download.status === 'completed' ? 'text-green-500' :
+                        download.status === 'failed' ? 'text-[#f32b2b]' :
+                          'text-[#f32b2b]'
+                    ]" />
                 </div>
                 <div>
                   <p class="text-gray-800 dark:text-white font-medium truncate max-w-[200px]">{{ download.title }}</p>
@@ -120,7 +122,7 @@
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatSize(download.size) }}</p>
               </div>
             </div>
-            
+
             <div v-if="downloadHistory.length === 0" class="text-center py-8">
               <Icon icon="ri:inbox-line" class="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <p class="text-gray-500 dark:text-gray-400">No downloads yet</p>
@@ -131,25 +133,17 @@
     </div>
 
     <!-- Edit Profile Dialog -->
-    <EditProfileDialog
-      :is-open="isEditProfileOpen"
-      @close="closeEditProfile"
-      @saved="handleProfileSaved"
-    />
+    <EditProfileDialog :is-open="isEditProfileOpen" @close="closeEditProfile" @saved="handleProfileSaved" />
 
     <!-- Recharge Dialog -->
-    <RechargeDialog
-      :is-open="isRechargeOpen"
-      @close="closeRechargeDialog"
-      @success="handleRechargeSuccess"
-    />
+    <RechargeDialog :is-open="isRechargeOpen" @close="closeRechargeDialog" @success="handleRechargeSuccess" />
 
     <Footer />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '../stores/user'
@@ -160,6 +154,8 @@ import Footer from '../components/layout/Footer.vue'
 import UserAvatar from '../components/user/UserAvatar.vue'
 import EditProfileDialog from '../components/user/EditProfileDialog.vue'
 import RechargeDialog from '../components/user/RechargeDialog.vue'
+import type { CreditBase } from '@/types/credits'
+
 
 const toastStore = useToastStore()
 const userStore = useUserStore()
@@ -209,6 +205,21 @@ const downloadHistory = ref<Download[]>([
     status: 'failed'
   }
 ])
+
+const recentCreditsHistory = ref<CreditBase[]>([])
+
+const getRecentCreditsHistory = async () => {
+  try {
+    const result = await userStore.getCreditHistory(0, 1) // 只获取最近1条记录
+    recentCreditsHistory.value = result?.records!!
+  } catch (error) {
+    toastStore.showToast('Failed to load credits history', 'error')
+  }
+}
+
+onMounted(async () => {
+  await getRecentCreditsHistory()
+})
 
 const openEditProfile = () => {
   isEditProfileOpen.value = true

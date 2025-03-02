@@ -25,7 +25,7 @@
           <div v-for="credit in paging.records" :key="credit.id"
             class="bg-white/50 dark:bg-gray-800/50 p-4 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
             <div class="flex items-center justify-between">
-              <div>
+              <div class="mr-4">
                 <h4 class="text-2xl font-medium text-gray-800 dark:text-white">{{ credit.action }}</h4>
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ credit.description }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(credit.created_at) }}</p>

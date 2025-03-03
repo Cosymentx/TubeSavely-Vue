@@ -71,7 +71,7 @@
         </div>
 
         <!-- Profile Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div
             class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Downloads</h3>
@@ -87,7 +87,7 @@
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Total Size</h3>
             <p class="text-3xl font-bold text-[#f32b2b]">{{ formatSize(stats.totalSize) }}</p>
           </div>
-        </div>
+        </div> -->
 
         <!-- Download History -->
         <div
@@ -165,11 +165,11 @@ const isEditProfileOpen = ref(false)
 const isRechargeOpen = ref(false)
 
 // Mock data - 实际应该从API获取
-const stats = ref({
-  downloads: 42,
-  savedVideos: 15,
-  totalSize: 1024 * 1024 * 1024 * 2.5 // 2.5GB
-})
+// const stats = ref({
+//   downloads: 42,
+//   savedVideos: 15,
+//   totalSize: 1024 * 1024 * 1024 * 2.5 // 2.5GB
+// })
 
 const recentCreditsHistory = ref<CreditBase[]>([])
 const recentVideoHistory = ref<Video[]>([])
@@ -230,12 +230,5 @@ const formatDate = (date: string | undefined) => {
     month: 'long',
     day: 'numeric'
   })
-}
-
-const formatSize = (bytes: number) => {
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
-  if (bytes === 0) return '0 Byte'
-  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)).toString())
-  return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i]
 }
 </script>

@@ -12,11 +12,12 @@ import type {
 } from '../types/payment'
 import type { ApiResponse } from '../types/api'
 import type { AxiosResponse } from 'axios'
+import { Paging } from '@/types/paging'
 
 
 export const usePaymentStore = defineStore('payment', () => {
   const isLoading = ref(false)
-  const paymentHistory = ref<Payment[]>([])
+  const paymentHistory = ref<Paging<Payment>>()
   const error = ref<string | null>(null)
 
   const toastStore = useToastStore()
@@ -78,15 +79,14 @@ export const usePaymentStore = defineStore('payment', () => {
     }
   }
 
-  const getPaymentHistory = async (page = 1, limit = 10) => {
+  const getPaymentHistory = async (page = 1, size = 10) => {
     try {
       isLoading.value = true
       error.value = null
 
-      const response = await paymentService.getPaymentHistory(page, limit)
-      const history = ((response as unknown as AxiosResponse<ApiResponse<PaymentHistory>>).data).data
-      paymentHistory.value = history.payments
-      return history
+      const response = await paymentService.getPaymentHistory(page, size)
+      paymentHistory.value = response.data.data!!
+      return paymentHistory.value
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to get payment history'
       error.value = errorMessage

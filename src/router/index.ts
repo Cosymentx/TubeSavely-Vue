@@ -79,6 +79,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/paymentResult',
+      name: 'paymentResult',
+      component: () => import('../views/PaymentResult.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/auth/oauth/:provider/callback',
       redirect: to => {
         const { provider } = to.params

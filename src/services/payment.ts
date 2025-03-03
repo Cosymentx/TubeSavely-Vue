@@ -7,6 +7,7 @@ import type {
   PaymentResult,
   PaymentHistory 
 } from '../types/payment'
+import { Paging } from '@/types/paging'
 
 export const createPaymentService = (api: AxiosInstance) => ({
   createPayment: (data: PaymentCreate): ApiResult<PaymentResponse> => {
@@ -26,7 +27,7 @@ export const createPaymentService = (api: AxiosInstance) => ({
     return api.post(`/payments/verify/${orderId}`)
   },
 
-  getPaymentHistory: (page = 1, limit = 10): ApiResult<PaymentHistory> => {
-    return api.get(`/payments/history?page=${page}&limit=${limit}`)
+  getPaymentHistory: (page = 1, size = 10): ApiResult<Paging<Payment>> => {
+    return api.get(`/payments/history?page=${page}&limit=${size}`)
   }
 }) 

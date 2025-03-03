@@ -121,14 +121,8 @@ const toastStore = useToastStore()
 const router = useRouter()
 const isLoading = ref(false)
 
-// 保存初始设置用于比较变化
-const initialPreferences = {
-  defaultQuality: 'best',
-  autoConvert: true,
-  notifications: true,
-  maxConcurrent: '2'
-}
-
+// 使用 store 中的初始设置
+const initialPreferences = { ...userStore.preferences }
 const preferences = ref({ ...initialPreferences })
 
 const hasChanges = computed(() => {
@@ -138,13 +132,15 @@ const hasChanges = computed(() => {
 const savePreferences = async () => {
   try {
     isLoading.value = true
-    // TODO: Implement preferences update API call
-    // await userStore.updatePreferences(preferences.value)
+    const success = await userStore.savePreferences(preferences.value)
     
-    // 更新初始值
-    Object.assign(initialPreferences, preferences.value)
-    
-    toastStore.showToast('Preferences saved successfully', 'success')
+    if (success) {
+      // 更新初始值
+      Object.assign(initialPreferences, preferences.value)
+      toastStore.showToast('Preferences saved successfully', 'success')
+    } else {
+      toastStore.showToast('Failed to save preferences', 'error')
+    }
   } catch (err) {
     toastStore.showToast('Failed to save preferences', 'error')
   } finally {

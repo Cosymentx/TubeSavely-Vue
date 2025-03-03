@@ -93,7 +93,7 @@
         <div
           class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Download History</h3>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Extraction History</h3>
             <RouterLink to="/download-history" class="text-sm text-[#f32b2b] hover:underline">
               View All
             </RouterLink>

@@ -231,14 +231,14 @@ const handleRecharge = async () => {
 
 // 添加轮询支付状态的函数
 const pollPaymentStatus = async (orderId: string) => {
-  const maxAttempts = 60 // 最多轮询60次
+  const maxAttempts = 10 // 最多轮询10次
   let attempts = 0
 
   const checkStatus = async () => {
     try {
       const { status } = await paymentStore.getPaymentStatus(orderId)
       if (status === 'pending') {
-        console.log('--------->>>pending')
+
         return
       } else
         if (status === 'completed') {

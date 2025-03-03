@@ -46,6 +46,15 @@ export const useVideoStore = defineStore('video', () => {
 
   const fetchVideoInfo = async (url: string) => {
     try {
+      if (!userStore.isLoggedIn) {
+        toastStore.showToast('Please login to download', 'error')
+        return
+      }
+
+      if (userStore.getCredits() < 3) {
+        toastStore.showToast('Insufficient credits. You need 3 credits to download.', 'error')
+        return
+      }
       isLoading.value = true
       error.value = ''
       const response = await videoService.parse(url)
@@ -83,6 +92,24 @@ export const useVideoStore = defineStore('video', () => {
       isLoading.value = false
     }
   }
+
+  const deleteVideo = async (id: number) => {
+    try {
+      isLoading.value = true
+      const response = await videoService.deleteVideo(id)
+      if (response.data.code === 200) {
+        toastStore.showToast('Video deleted successfully!', 'success')
+      } else {
+        toastStore.showToast(response.data.msg, 'error')
+      }
+    } catch (err) {
+      error.value = getErrorMessage(err)
+      toastStore.showToast(error.value, 'error')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const downloadVideo = async () => {
     if (!userStore.isLoggedIn) {
       toastStore.showToast('Please login to download', 'error')
@@ -140,6 +167,24 @@ export const useVideoStore = defineStore('video', () => {
     if (!videoUrl.value) return
     await fetchVideoInfo(videoUrl.value)
   }
+
+  const getVideoHistory = async (page: number = 0, size: number = 10) => {
+    try {
+      isLoading.value = true
+      const response = await videoService.getVideoHistory(page, size)
+      if (response.data.code === 200) {
+        return response.data.data
+      } else {
+        toastStore.showToast(response.data.msg, 'error')
+      }
+    } catch (err) {
+      error.value = getErrorMessage(err)
+      toastStore.showToast(error.value, 'error')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     videoUrl,
     format,
@@ -153,6 +198,8 @@ export const useVideoStore = defineStore('video', () => {
     setFormat,
     downloadVideo,
     parseVideo,
-    resetState
+    resetState,
+    getVideoHistory,
+    deleteVideo
   }
 })

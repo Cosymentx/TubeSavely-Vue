@@ -73,7 +73,7 @@ const router = createRouter({
     {
       path: '/download-history',
       name: 'download-history',
-      component: () => import('../views/DownloadHistory.vue'),
+      component: () => import('../views/VideoHistory.vue'),
       meta: {
         requiresAuth: true
       }
@@ -108,4 +108,4 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
-export default router 
+export default router

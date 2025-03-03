@@ -40,7 +40,7 @@ export const createUserService = (api: AxiosInstance) => ({
     })
   },
 
-  getDownloadHistory: (page = 1, limit = 10) => {
+  getVideoHistory: (page = 1, limit = 10) => {
     return api.get(`/users/downloads?page=${page}&limit=${limit}`)
   }
 })

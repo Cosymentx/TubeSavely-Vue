@@ -7,6 +7,7 @@ import { createCreditsService } from '../services/credits'
 import type { User, UserLogin, UserCreate, UserUpdate, UserPasswordUpdate } from '../types/user'
 import { useToastStore } from './toast'
 import { getErrorMessage } from '../utils/error'
+import type { UserPreferences } from '../types/preferences'
 
 
 export const useUserStore = defineStore('user', () => {
@@ -20,6 +21,35 @@ export const useUserStore = defineStore('user', () => {
   const userService = createUserService(api)
   const creditsService = createCreditsService(api)
 
+  // 添加用户偏好设置
+  const preferences = ref<UserPreferences>({
+    defaultQuality: 'best',
+    autoConvert: true,
+    notifications: true,
+    maxConcurrent: '2'
+  })
+
+  // 从本地存储加载偏好设置
+  const loadPreferences = () => {
+    const savedPreferences = localStorage.getItem('userPreferences')
+    if (savedPreferences) {
+      preferences.value = JSON.parse(savedPreferences)
+    }
+  }
+
+  // 保存偏好设置
+  const savePreferences = async (newPreferences: UserPreferences) => {
+    try {
+      // TODO: 如果有后端 API，这里可以调用 API 保存
+      preferences.value = newPreferences
+      localStorage.setItem('userPreferences', JSON.stringify(newPreferences))
+      return true
+    } catch (error) {
+      console.error('Failed to save preferences:', error)
+      return false
+    }
+  }
+
   // 初始化状态
   const initState = () => {
     const savedUser = localStorage.getItem('userState')
@@ -31,6 +61,9 @@ export const useUserStore = defineStore('user', () => {
 
   // 初始化
   initState()
+
+  // 初始化时加载偏好设置
+  loadPreferences()
 
   const setUser = (userData: User | null) => {
     localUser.value = userData
@@ -277,6 +310,8 @@ export const useUserStore = defineStore('user', () => {
     updateAvatar,
     deductCredits,
     getCredits,
-    getCreditHistory
+    getCreditHistory,
+    preferences,
+    savePreferences
   }
 })

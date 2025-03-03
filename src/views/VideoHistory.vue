@@ -8,7 +8,7 @@
       <div
         class="w-full backdrop-blur-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg mt-5">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Download History</h1>
+          <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Extraction History</h1>
           <div class="flex items-center space-x-2">
             <!-- <input
               type="text"
@@ -75,9 +75,9 @@
           <!-- Empty State -->
           <div v-if="paging.total === 0" class="text-center py-12">
             <Icon icon="ri:inbox-line" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p class="text-gray-500 dark:text-gray-400 text-lg">No downloads found</p>
+            <p class="text-gray-500 dark:text-gray-400 text-lg">No extraction history found</p>
             <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">
-              Your download history will appear here
+              Your extraction history will appear here
             </p>
           </div>
         </div>
@@ -85,7 +85,7 @@
         <!-- Pagination -->
         <div v-if="paging.records.length > 0" class="mt-6 flex items-center justify-between">
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Showing {{ paging.current }}-{{ paging.pages }} of {{ paging.total }} downloads
+            Showing {{ paging.current }}-{{ paging.pages }} of {{ paging.total }} extractions
           </p>
           <div class="flex items-center space-x-2">
             <button @click="loadPage(currentPage - 1)" :disabled="currentPage === 1"
@@ -107,7 +107,7 @@
     <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Confirm Delete</h3>
-        <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to delete this download record? This
+        <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to delete this extraction record? This
           action cannot be undone.</p>
         <div class="flex justify-end space-x-3">
           <button @click="showDeleteConfirm = false"
@@ -186,9 +186,9 @@ const confirmDelete = async () => {
       await loadPage(currentPage.value)
     }
 
-    toastStore.showToast('Download deleted', 'success')
+    toastStore.showToast('Extraction deleted', 'success')
   } catch (error) {
-    toastStore.showToast('Failed to delete download', 'error')
+    toastStore.showToast('Failed to delete extraction', 'error')
   } finally {
     showDeleteConfirm.value = false
     videoToDelete.value = null

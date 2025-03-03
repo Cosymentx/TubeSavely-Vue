@@ -1,7 +1,7 @@
 import type { AxiosInstance } from 'axios'
 import type { ApiResponse,ApiResult } from '../types/api'
-import type { CreditBase } from '../types/credits'
-import type { Paging } from '../types/paging'
+import type { CreditBase } from '@/types/credits'
+import type { Paging } from '@/types/paging'
 export const createCreditsService = (api: AxiosInstance) => {
   return {
     /**

@@ -4,7 +4,6 @@ import { useApi } from '../composables/useApi'
 import { createAuthService } from '../services/auth'
 import { createUserService } from '../services/user'
 import { createCreditsService } from '../services/credits'
-
 import type { User, UserLogin, UserCreate, UserUpdate, UserPasswordUpdate } from '../types/user'
 import { useToastStore } from './toast'
 import { getErrorMessage } from '../utils/error'

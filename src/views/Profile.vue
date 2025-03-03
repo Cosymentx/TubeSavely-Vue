@@ -17,7 +17,7 @@
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ userStore.localUser?.username }}</h1>
                 <p class="text-gray-600 dark:text-gray-300">{{ userStore.localUser?.email }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Member since {{
-                  formatDate(userStore.localUser?.created_at) }}</p>
+            formatDate(userStore.localUser?.created_at) }}</p>
               </div>
               <button @click="openEditProfile" class="btn-secondary">
                 <!-- Edit Profile -->
@@ -46,10 +46,10 @@
               class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center">
-                  <Icon :icon="credit.credits >= 0? 'ri:add-line' : 'ri:subtract-line'" :class="[
-                    'w-5 h-5',
-                    credit.credits >= 0 ? 'text-green-500' : 'text-[#f32b2b]'
-                  ]" />
+                  <Icon :icon="credit.credits >= 0 ? 'ri:add-line' : 'ri:subtract-line'" :class="[
+            'w-5 h-5',
+            credit.credits >= 0 ? 'text-green-500' : 'text-[#f32b2b]'
+          ]" />
                 </div>
                 <div>
                   <p class="text-gray-800 dark:text-white font-medium">{{ credit.action }}</p>
@@ -59,9 +59,9 @@
               </div>
               <div class="text-right">
                 <p :class="[
-                  'text-lg font-semibold',
-                  credit.credits >= 0 ? 'text-green-600' : 'text-[#f32b2b]'
-                ]">
+            'text-lg font-semibold',
+            credit.credits >= 0 ? 'text-green-600' : 'text-[#f32b2b]'
+          ]">
                   {{ credit.credits >= 0 ? '+' : '' }}{{ credit.credits }}
                 </p>
                 <p class="text-sm text-gray-500 whitespace-nowrap">Balance: {{ userStore.getCredits() }}</p>
@@ -99,31 +99,31 @@
             </RouterLink>
           </div>
           <div class="space-y-4">
-            <div v-for="download in downloadHistory" :key="download.id"
+            <div v-for="video in recentVideoHistory" :key="video.id"
               class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center">
                   <Icon
-                    :icon="download.status === 'completed' ? 'ri:check-line' : download.status === 'failed' ? 'ri:close-line' : 'ri:download-line'"
+                    :icon="video.author === 'completed' ? 'ri:check-line' : video.author === 'failed' ? 'ri:close-line' : 'ri:download-line'"
                     :class="[
-                      'w-5 h-5',
-                      download.status === 'completed' ? 'text-green-500' :
-                        download.status === 'failed' ? 'text-[#f32b2b]' :
-                          'text-[#f32b2b]'
-                    ]" />
+            'w-5 h-5',
+            video.author === 'completed' ? 'text-green-500' :
+            video.author === 'failed' ? 'text-[#f32b2b]' :
+                'text-[#f32b2b]'
+          ]" />
                 </div>
                 <div>
-                  <p class="text-gray-800 dark:text-white font-medium truncate max-w-[200px]">{{ download.title }}</p>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(download.date) }}</p>
+                  <p class="text-gray-800 dark:text-white font-medium">{{ video.title }} - <span>{{ video.author }}</span></p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(video.created_at) }}</p>
                 </div>
               </div>
               <div class="text-right">
-                <p class="text-sm font-medium text-gray-800 dark:text-white">{{ download.quality }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatSize(download.size) }}</p>
+                <!-- <p class="text-sm font-medium text-gray-800 dark:text-white">{{ video.quality }}</p> -->
+                <!-- <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatSize(video.size) }}</p> -->
               </div>
             </div>
 
-            <div v-if="downloadHistory.length === 0" class="text-center py-8">
+            <div v-if="recentVideoHistory.length === 0" class="text-center py-8">
               <Icon icon="ri:inbox-line" class="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <p class="text-gray-500 dark:text-gray-400">No downloads yet</p>
             </div>
@@ -147,6 +147,7 @@ import { ref, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '../stores/user'
+import { useVideoStore } from '@/stores/video'
 import { useToastStore } from '../stores/toast'
 import BackgroundEffect from '../components/BackgroundEffect.vue'
 import Navigation from '../components/layout/Navigation.vue'
@@ -155,10 +156,11 @@ import UserAvatar from '../components/user/UserAvatar.vue'
 import EditProfileDialog from '../components/user/EditProfileDialog.vue'
 import RechargeDialog from '../components/user/RechargeDialog.vue'
 import type { CreditBase } from '@/types/credits'
-
+import type { Video } from '@/types/video'
 
 const toastStore = useToastStore()
 const userStore = useUserStore()
+const videoStore = useVideoStore()
 const isEditProfileOpen = ref(false)
 const isRechargeOpen = ref(false)
 
@@ -169,44 +171,8 @@ const stats = ref({
   totalSize: 1024 * 1024 * 1024 * 2.5 // 2.5GB
 })
 
-interface Download {
-  id: number
-  title: string
-  date: string
-  quality: string
-  size: number
-  status: 'completed' | 'failed' | 'downloading'
-}
-
-// Mock data - 实际应该从API获取
-const downloadHistory = ref<Download[]>([
-  {
-    id: 1,
-    title: 'Why Vue.js is Amazing.mp4',
-    date: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
-    quality: '1080p',
-    size: 1024 * 1024 * 150, // 150MB
-    status: 'completed'
-  },
-  {
-    id: 2,
-    title: 'Learn TypeScript in 2024.mp4',
-    date: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-    quality: '720p',
-    size: 1024 * 1024 * 80, // 80MB
-    status: 'completed'
-  },
-  {
-    id: 3,
-    title: 'Building Modern Web Apps.mp4',
-    date: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3 hours ago
-    quality: '1080p',
-    size: 1024 * 1024 * 200, // 200MB
-    status: 'failed'
-  }
-])
-
 const recentCreditsHistory = ref<CreditBase[]>([])
+const recentVideoHistory = ref<Video[]>([])
 
 const getRecentCreditsHistory = async () => {
   try {
@@ -217,8 +183,18 @@ const getRecentCreditsHistory = async () => {
   }
 }
 
+const getRecentVideoHistory = async () => {
+  try {
+    const result = await videoStore.getVideoHistory(0, 5) // 只获取最近1条记录
+    recentVideoHistory.value = result?.records!!
+  } catch (error) {
+    toastStore.showToast('Failed to load videos history', 'error')
+  }
+}
+
 onMounted(async () => {
   await getRecentCreditsHistory()
+  await getRecentVideoHistory()
 })
 
 const openEditProfile = () => {
@@ -235,7 +211,7 @@ const handleProfileSaved = () => {
 
 const openRechargeDialog = () => {
   isRechargeOpen.value = true
-}
+} 
 
 const closeRechargeDialog = () => {
   isRechargeOpen.value = false

@@ -30,6 +30,7 @@ export interface VideoBase {
   author_url?: string
   view_count?: string
   like_count?: string
+  created_at?: string
 }
 
 export interface VideoCreate extends VideoBase {

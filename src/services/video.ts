@@ -1,5 +1,6 @@
-import type { VideoCreate, VideoFormat, VideoDownloadOptions } from '../types/video'
-import type { ApiResult } from '../types/api'
+import type {VideoBase, VideoCreate, VideoFormat, VideoDownloadOptions, Video } from '../types/video'
+import type { ApiResult } from '@/types/api'
+import type { Paging } from '@/types/paging'
 import type { AxiosInstance } from 'axios'
 
 export const createVideoService = (api: AxiosInstance) => ({
@@ -12,6 +13,16 @@ export const createVideoService = (api: AxiosInstance) => ({
 
   getFormats: (url: string): ApiResult<VideoFormat[]> => {
     return api.get(`/videos/formats?url=${encodeURIComponent(url)}`)
+  },
+  
+  getVideoHistory: (page: number = 0, size: number = 20): ApiResult<Paging<Video>> => {
+    return api.get('/videos/history', {
+      params: { page, size }
+    })
+  },
+
+  deleteVideo: (id: number): ApiResult<void> => {
+    return api.delete(`/videos/${id}`)
   },
 
   download: (

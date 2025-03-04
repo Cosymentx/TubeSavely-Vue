@@ -1,4 +1,4 @@
-export type PaymentMethodType = 'alipay' | 'wechat' | 'stripe' | 'paypal'
+export type PaymentMethodType = 'alipay' | 'wechat' | 'stripe' | 'paypal' | 'airwallex'
 export type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed'
 
 // 支付方式定义

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useUserStore } from '../stores/user'
+// import { useUserStore } from '../stores/user'
 
-const userStore = useUserStore()
+// const userStore = useUserStore()
 const users = ref<Array<{ username: string }>>([])
 
 const fetchUsers = async () => {
   try {
     const response = await fetch('http://localhost:8000/admin/users', {
-      headers: {
-        'Authorization': `Bearer ${userStore.token}`
-      }
+      // headers: {
+      //   'Authorization': `Bearer ${userStore.token}`
+      // }
     })
     if (response.ok) {
       users.value = await response.json()

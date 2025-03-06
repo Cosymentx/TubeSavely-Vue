@@ -102,7 +102,6 @@ import {
 } from '@headlessui/vue'
 import { useToastStore } from '../../stores/toast'
 import { useUserStore } from '../../stores/user'
-import UserAvatar from './UserAvatar.vue'
 import type { UserPasswordUpdate } from '../../types/user'
 
 interface Props {
@@ -169,28 +168,28 @@ onMounted(() => {
   profile.value.avatar = userStore.localUser?.avatar || ''
 })
 
-const handleAvatarChange = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  if (!target.files?.length) return
+// const handleAvatarChange = (event: Event) => {
+//   const target = event.target as HTMLInputElement
+//   if (!target.files?.length) return
 
-  const file = target.files[0]
+//   const file = target.files[0]
 
-  // Validate file size (2MB max)
-  if (file.size > 2 * 1024 * 1024) {
-    toastStore.showToast('Avatar file size must be less than 2MB', 'error')
-    target.value = ''
-    return
-  }
+//   // Validate file size (2MB max)
+//   if (file.size > 2 * 1024 * 1024) {
+//     toastStore.showToast('Avatar file size must be less than 2MB', 'error')
+//     target.value = ''
+//     return
+//   }
 
-  // Validate file type
-  if (!['image/jpeg', 'image/png'].includes(file.type)) {
-    toastStore.showToast('Only JPG and PNG files are supported', 'error')
-    target.value = ''
-    return
-  }
+//   // Validate file type
+//   if (!['image/jpeg', 'image/png'].includes(file.type)) {
+//     toastStore.showToast('Only JPG and PNG files are supported', 'error')
+//     target.value = ''
+//     return
+//   }
 
-  newAvatar.value = file
-}
+//   newAvatar.value = file
+// }
 
 const saveChanges = async () => {
   try {

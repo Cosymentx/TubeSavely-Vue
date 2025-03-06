@@ -8,7 +8,6 @@ import type {
   PaymentResponse,
   PaymentResult,
   PaymentMethodType,
-  PaymentHistory
 } from '../types/payment'
 import type { ApiResponse } from '../types/api'
 import type { AxiosResponse } from 'axios'

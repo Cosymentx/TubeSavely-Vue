@@ -101,7 +101,7 @@ const router = createRouter({
 })
 
 // 修复路由守卫逻辑
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
   const userStore = useUserStore()
   // const token = localStorage.getItem('token')
 

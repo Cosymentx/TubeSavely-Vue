@@ -1,4 +1,4 @@
-import type {VideoBase, VideoCreate, VideoFormat, VideoDownloadOptions, Video } from '../types/video'
+import type {VideoCreate, VideoFormat, VideoDownloadOptions, Video } from '../types/video'
 import type { ApiResult } from '@/types/api'
 import type { Paging } from '@/types/paging'
 import type { AxiosInstance } from 'axios'

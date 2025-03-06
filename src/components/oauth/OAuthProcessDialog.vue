@@ -104,11 +104,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue'
 import { Icon } from '@iconify/vue'
 
-const props = defineProps<{
+defineProps<{
   isOpen: boolean
   state: 'loading' | 'success' | 'error'
   message: string

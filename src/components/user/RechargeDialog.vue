@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import {
   Dialog,
   DialogPanel,
@@ -166,10 +166,6 @@ watch(() => props.isOpen, (newValue) => {
     selectedAmount.value = predefinedAmounts[0]
     selectedPaymentMethod.value = paymentMethods[0]
   }
-})
-
-const canProceed = computed(() => {
-  return selectedAmount.value && selectedPaymentMethod.value && !isLoading.value
 })
 
 const closeDialog = () => {

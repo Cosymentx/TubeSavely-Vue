@@ -67,18 +67,18 @@ import {
   ListboxOption,
 } from '@headlessui/vue'
 
-interface Option {
-  value: string | number
+interface Option<T = any> {
+  value: T
   label: string
 }
 
 const props = defineProps<{
-  modelValue: string | number
-  options: Option[]
+  modelValue: any
+  options: Option<any>[]
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | number): void
+  (e: 'update:modelValue', value: any): void
 }>()
 
 const selectedValue = computed({

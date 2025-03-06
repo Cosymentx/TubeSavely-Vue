@@ -5,7 +5,6 @@ import type {
   PaymentResponse, 
   Payment, 
   PaymentResult,
-  PaymentHistory 
 } from '../types/payment'
 import { Paging } from '@/types/paging'
 

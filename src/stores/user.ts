@@ -136,7 +136,7 @@ export const useUserStore = defineStore('user', () => {
     toastStore.showToast('Logged out successfully', 'success')
   }
 
-  const socialLogin = async (provider: 'google' | 'github' | 'wechat') => {
+  const socialLogin = async (provider: 'google' | 'github' | 'facebook' | 'wechat') => {
     try {
       isLoading.value = true
       error.value = null

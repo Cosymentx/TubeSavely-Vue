@@ -134,11 +134,11 @@ const paymentMethods: PaymentMethod[] = [
     name: 'Alipay',
     icon: 'ri:alipay-line'
   },
-  {
-    id: 'wechat',
-    name: 'WeChat Pay',
-    icon: 'ri:wechat-pay-line'
-  },
+  // {
+  //   id: 'wechat',
+  //   name: 'WeChat Pay',
+  //   icon: 'ri:wechat-pay-line'
+  // },
   {
     id: 'stripe',
     name: 'Stripe',

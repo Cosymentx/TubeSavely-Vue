@@ -1,7 +1,7 @@
 <template>
   <div class="relative min-h-screen overflow-hidden">
     <BackgroundEffect />
-    
+
     <div class="relative flex flex-col items-center justify-center min-h-screen max-w-md mx-auto px-4 py-16">
       <!-- Logo -->
       <div class="mb-8 text-center">
@@ -10,34 +10,20 @@
       </div>
 
       <!-- Login Form -->
-      <div class="w-full backdrop-blur-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg mt-5">
+      <div
+        class="w-full backdrop-blur-xl bg-white/50 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/30 rounded-2xl p-8 shadow-lg mt-5">
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <div>
             <label class="block text-gray-600 dark:text-gray-300 mb-2">Email</label>
-            <input 
-              v-model="form.email"
-              type="email"
-              required
-              class="form-input"
-              autocomplete="email"
-            />
+            <input v-model="form.email" type="email" required class="form-input" autocomplete="email" />
           </div>
 
           <div>
             <label class="block text-gray-600 dark:text-gray-300 mb-2">Password</label>
-            <input 
-              v-model="form.password"
-              type="password"
-              required
-              class="form-input"
-            />
+            <input v-model="form.password" type="password" required class="form-input" />
           </div>
 
-          <button
-            type="submit"
-            :disabled="userStore.isLoading"
-            class="w-full btn-primary"
-          >
+          <button type="submit" :disabled="userStore.isLoading" class="w-full btn-primary">
             {{ userStore.isLoading ? 'Signing in...' : 'Sign In' }}
           </button>
         </form>
@@ -48,47 +34,41 @@
             <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-white/80 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300 font-medium">Or continue with</span>
+            <span class="px-4 bg-white/80 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300 font-medium">Or continue
+              with</span>
           </div>
         </div>
 
         <!-- Social Login -->
         <div class="grid grid-cols-2 gap-4">
-          <button 
-            @click="handleSocialLogin('google')" 
-            :disabled="isProcessingOAuth"
-            class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button @click="handleSocialLogin('google')" :disabled="isProcessingOAuth"
+            class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group disabled:opacity-50 disabled:cursor-not-allowed">
             <Icon icon="ri:google-fill" class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-[#f32b2b]" />
             <span class="group-hover:text-[#f32b2b]">Google</span>
           </button>
-          
-          <button 
-            @click="handleSocialLogin('github')" 
-            :disabled="isProcessingOAuth"
-            class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+
+          <button @click="handleSocialLogin('github')" :disabled="isProcessingOAuth"
+            class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group disabled:opacity-50 disabled:cursor-not-allowed">
             <Icon icon="ri:github-fill" class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-[#f32b2b]" />
             <span class="group-hover:text-[#f32b2b]">GitHub</span>
           </button>
-          
-          <button 
-            @click="handleSocialLogin('wechat')" 
-            :disabled="isProcessingOAuth"
-            class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group col-span-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+
+          <!-- <button @click="handleSocialLogin('wechat')" :disabled="isProcessingOAuth"
+            class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group col-span-2 disabled:opacity-50 disabled:cursor-not-allowed">
             <Icon icon="ri:wechat-fill" class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-[#f32b2b]" />
             <span class="group-hover:text-[#f32b2b]">WeChat</span>
+          </button> -->
+          <button @click="handleSocialLogin('facebook')" :disabled="isProcessingOAuth"
+            class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group col-span-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <Icon icon="ri:facebook-fill" class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-[#f32b2b]" />
+            <span class="group-hover:text-[#f32b2b]">Facebook</span>
           </button>
         </div>
 
         <div class="mt-6 text-center">
           <p class="text-gray-600 dark:text-gray-300">
             Don't have an account?
-            <router-link 
-              to="/register" 
-              class="text-[#f32b2b] hover:text-[#ff4b4b] transition-colors"
-            >
+            <router-link to="/register" class="text-[#f32b2b] hover:text-[#ff4b4b] transition-colors">
               Sign up
             </router-link>
           </p>
@@ -98,12 +78,8 @@
     <Footer />
 
     <!-- OAuth Processing Dialog -->
-    <OAuthProcessDialog
-      :is-open="showOAuthDialog"
-      :state="oauthState"
-      :message="oauthMessage"
-      @close="handleOAuthClose"
-    />
+    <OAuthProcessDialog :is-open="showOAuthDialog" :state="oauthState" :message="oauthMessage"
+      @close="handleOAuthClose" />
   </div>
 </template>
 
@@ -148,7 +124,7 @@ const handleSubmit = async () => {
   }
 }
 
-const handleSocialLogin = async (provider: 'google' | 'github' | 'wechat') => {
+const handleSocialLogin = async (provider: 'google' | 'github' | 'facebook' | 'wechat') => {
   try {
     isProcessingOAuth.value = true
     showOAuthDialog.value = true
@@ -209,7 +185,7 @@ const handleOAuthCallback = async () => {
   try {
     oauthState.value = 'loading'
     oauthMessage.value = 'Processing login...'
-    
+
     const success = await userStore.handleOAuthCallback(
       oauth_provider as string,
       code as string,

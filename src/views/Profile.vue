@@ -125,7 +125,7 @@
 
             <div v-if="recentVideoHistory.length === 0" class="text-center py-8">
               <Icon icon="ri:inbox-line" class="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p class="text-gray-500 dark:text-gray-400">No downloads yet</p>
+              <p class="text-gray-500 dark:text-gray-400">No extraction history found yet</p>
             </div>
           </div>
         </div>

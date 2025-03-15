@@ -41,13 +41,13 @@
           Profile
         </router-link>
         
-        <router-link
+        <!-- <router-link
           to="/settings"
           class="flex items-center px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-[#f32b2b]/5 dark:hover:bg-[#f32b2b]/10 transition-colors"
         >
           <Icon icon="ri:settings-line" class="w-5 h-5 mr-2" />
           Settings
-        </router-link>
+        </router-link> -->
 
         <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
 

@@ -12,7 +12,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['axios']
   },
-  server: { 
+  server: {
     port: 5173,
     proxy: {
       '/api/v1': {

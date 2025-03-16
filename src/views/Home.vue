@@ -55,10 +55,10 @@
                     <button v-for="option in formatOptions" :key="option.id" @click="selectFormatOption(option)"
                       class="w-full flex items-center gap-1.5 px-2 py-1.5 hover:bg-[#f32b2b]/5 transition-colors"
                       :class="[
-                  videoStore.format === option.id
-                    ? 'text-[#f32b2b] bg-[#f32b2b]/5'
-                    : 'text-gray-700 dark:text-gray-200'
-                ]">
+                        videoStore.format === option.id
+                          ? 'text-[#f32b2b] bg-[#f32b2b]/5'
+                          : 'text-gray-700 dark:text-gray-200'
+                      ]">
                       <Icon :icon="option.icon" class="w-4 h-4" />
                       <span class="text-xs font-medium">{{ option.label }}</span>
                     </button>
@@ -105,11 +105,11 @@
                 </div>
                 <div class="flex-1 min-w-0">
                   <h3 class="text-xl font-semibold text-gray-800 dark:text-white truncate">{{ videoStore.videoInfo.title
-                    }}</h3>
+                  }}</h3>
                   <div class="flex items-center gap-2 mt-2">
                     <Icon icon="ri:time-line" class="w-4 h-4 text-[#f32b2b]" />
                     <p class="text-sm text-gray-600 dark:text-gray-300">{{ formatDuration(videoStore.videoInfo.duration)
-                      }}</p>
+                    }}</p>
                   </div>
                   <div class="flex items-center gap-2 mt-1">
                     <Icon icon="ri:video-line" class="w-4 h-4 text-[#f32b2b]" />
@@ -121,11 +121,13 @@
                   <div class="flex items-center gap-4 mt-3">
                     <div class="flex items-center gap-2">
                       <Icon icon="ri:eye-line" class="w-4 h-4 text-[#f32b2b]" />
-                      <span class="text-sm text-gray-600 dark:text-gray-300">{{ formatNumber(videoStore.videoInfo.view_count || '0') }} views</span>
+                      <span class="text-sm text-gray-600 dark:text-gray-300">{{
+                        formatNumber(videoStore.videoInfo.view_count || '0') }} views</span>
                     </div>
                     <div class="flex items-center gap-2">
                       <Icon icon="ri:thumb-up-line" class="w-4 h-4 text-[#f32b2b]" />
-                      <span class="text-sm text-gray-600 dark:text-gray-300">{{ formatNumber(videoStore.videoInfo.like_count || '0') }} likes</span>
+                      <span class="text-sm text-gray-600 dark:text-gray-300">{{
+                        formatNumber(videoStore.videoInfo.like_count || '0') }} likes</span>
                     </div>
                   </div>
                 </div>
@@ -140,14 +142,14 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   <button v-for="format in filteredFormats" :key="format.format_id" @click="selectFormat(format)"
                     :class="[
-                  'px-4 py-3 rounded-lg text-sm font-medium transition-colors shadow-sm w-full',
-                  selectedFormat?.format_id === format.format_id
-                    ? 'bg-[#f32b2b]/10 text-[#f32b2b] border-2 border-[#f32b2b] shadow-[#f32b2b]/10'
-                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
-                ]">
+                      'px-4 py-3 rounded-lg text-sm font-medium transition-colors shadow-sm w-full',
+                      selectedFormat?.format_id === format.format_id
+                        ? 'bg-[#f32b2b]/10 text-[#f32b2b] border-2 border-[#f32b2b] shadow-[#f32b2b]/10'
+                        : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
+                    ]">
                     <div class="flex flex-col items-start gap-1">
                       <div class="flex items-center justify-between w-full">
-                        <span class="font-semibold">{{ format.format_note || `${format.height||720}p` }}</span>
+                        <span class="font-semibold">{{ format.format_note || `${format.height || 720}p` }}</span>
                         <span class="text-xs opacity-75">{{ format.ext.toUpperCase() }}</span>
                       </div>
                       <div class="flex flex-col text-xs opacity-75 text-left">
@@ -212,7 +214,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted,nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useVideoStore } from '../stores/video'
 import { useUserStore } from '../stores/user'
@@ -248,7 +250,7 @@ const formatDuration = (duration: string) => {
 const formatNumber = (num: number | string): string => {
   const n = typeof num === 'string' ? parseInt(num) : num
   if (isNaN(n)) return '0'
-  
+
   if (n >= 1000000) {
     return (n / 1000000).toFixed(1) + 'M'
   } else if (n >= 1000) {
@@ -294,17 +296,17 @@ const selectDefaultFormat = () => {
   if (!filteredFormats.value.length) return
 
   const { defaultQuality } = userStore.preferences
-  
+
   // 根据用户偏好的质量选择格式
   let selectedFormat = filteredFormats.value[0] // 默认选择第一个
-  
-  if (defaultQuality !== 'best') {
-    // 查找最接近用户偏好质量的格式
-    const targetHeight = parseInt(defaultQuality)
-    selectedFormat = filteredFormats.value.find(format => 
-      format.height === targetHeight
-    ) || filteredFormats.value[0]
-  }
+
+  // if (defaultQuality !== 'best') {
+  //   // 查找最接近用户偏好质量的格式
+  //   const targetHeight = parseInt(defaultQuality)
+  //   selectedFormat = filteredFormats.value.find(format => 
+  //     format.height === targetHeight
+  //   ) || filteredFormats.value[0]
+  // }
 
   selectFormat(selectedFormat)
 }
@@ -326,10 +328,6 @@ const handleParse = async () => {
       return
     }
     await videoStore.parseVideo()
-    await nextTick()
-    
-    // 使用新的选择默认格式方法
-    selectDefaultFormat()
   }
 }
 
@@ -349,6 +347,7 @@ const formatMenuRef = ref<HTMLElement | null>(null)
 const isFormatMenuOpen = ref(false)
 
 const selectedOption = computed(() => {
+  selectDefaultFormat()
   return formatOptions.find(option => option.id === videoStore.format) || formatOptions[0]
 })
 

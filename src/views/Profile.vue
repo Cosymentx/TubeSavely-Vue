@@ -45,8 +45,9 @@
             <div v-for="credit in recentCreditsHistory" :key="credit.id"
               class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
-                <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center">
-                  <Icon :icon="credit.credits >= 0 ? 'ri:add-line' : 'ri:subtract-line'" :class="[
+                <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center flex-shrink-0">
+                  <Icon :icon="credit.credits >= 0 ? 'ri:add-line' : 'ri:subtract-line'"
+                   :class="[
             'w-5 h-5',
             credit.credits >= 0 ? 'text-green-500' : 'text-[#f32b2b]'
           ]" />
@@ -102,7 +103,7 @@
             <div v-for="video in recentVideoHistory" :key="video.id"
               class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
-                <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center  flex-shrink-0">
                   <Icon
                     :icon="video.author === 'completed' ? 'ri:check-line' : video.author === 'failed' ? 'ri:close-line' : 'ri:download-line'"
                     :class="[

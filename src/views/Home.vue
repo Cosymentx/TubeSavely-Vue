@@ -214,7 +214,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useVideoStore } from '../stores/video'
 import { useUserStore } from '../stores/user'
@@ -295,7 +295,7 @@ const selectFormat = (format: VideoFormat) => {
 const selectDefaultFormat = () => {
   if (!filteredFormats.value.length) return
 
-  const { defaultQuality } = userStore.preferences
+  // const { defaultQuality } = userStore.preferences
 
   // 根据用户偏好的质量选择格式
   let selectedFormat = filteredFormats.value[0] // 默认选择第一个

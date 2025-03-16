@@ -4,7 +4,7 @@
     <BackgroundEffect />
 
     <!-- Main Content -->
-    <div class="relative flex flex-col items-center min-h-screen max-w-7xl mx-auto px-4 pt-20 lg:pt-40">
+    <div class="relative flex flex-col items-center min-h-screen max-w-7xl mx-auto px-4 pt-20 lg:pt-20">
       <Navigation />
 
       <!-- Logo Section -->

@@ -35,7 +35,7 @@
           <div v-for="video in paging.records" :key="video.id"
             class="flex items-center justify-between p-4 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30 hover:bg-white/40 dark:hover:bg-gray-600/40 transition-all">
             <div class="flex items-center space-x-4 flex-1">
-              <div class="w-12 h-12 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center">
+              <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center flex-shrink-0">
                 <Icon
                   :icon="video.author === 'completed' ? 'ri:check-line' : video.author === 'failed' ? 'ri:close-line' : 'ri:download-line'"
                   :class="[

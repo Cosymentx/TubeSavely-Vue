@@ -187,8 +187,14 @@ export const useUserStore = defineStore('user', () => {
     try {
       isLoading.value = true
       const response = await userService.getProfile()
-      setUser(response.data.data)
-      return true
+      if (response.data.code === 200 && response.data.data) {
+        setUser(response.data.data)
+        return true
+      } else {
+        const message = response.data.msg || 'Failed to fetch profile'
+        toastStore.showToast(message, 'error')
+        return false
+      }
     } catch (err) {
       const message = getErrorMessage(err)
       toastStore.showToast(message, 'error')

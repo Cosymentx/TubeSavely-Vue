@@ -22,32 +22,27 @@
 
         <!-- History List -->
         <div class="space-y-4">
-          <div v-for="credit in paging.records" :key="credit.id"
-            class="bg-white/50 dark:bg-gray-800/50 p-4 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
-            <div class="flex items-center justify-between">
-              <div class="mr-4">
-                <h4 class="text-2xl font-medium text-gray-800 dark:text-white">{{ credit.action }}</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ credit.description }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(credit.created_at) }}</p>
-              </div>
-              <div :class="[
-              'text-1xl font-semibold',
-              credit.credits >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 text-[#f32b2b]'
-            ]">
-                {{ credit.credits >= 0 ? '+' : '' }}{{ credit.credits }}
+          <template v-if="isLoading">
+            <SkeletonLoader v-for="n in 5" :key="n" />
+          </template>
+          <template v-else>
+            <div v-for="credit in paging.records" :key="credit.id"
+              class="bg-white/50 dark:bg-gray-800/50 p-4 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
+              <div class="flex items-center justify-between">
+                <div class="mr-4">
+                  <h4 class="text-2xl font-medium text-gray-800 dark:text-white">{{ credit.action }}</h4>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ credit.description }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(credit.created_at) }}</p>
+                </div>
+                <div :class="[
+                  'text-1xl font-semibold',
+                  credit.credits >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 text-[#f32b2b]'
+                ]">
+                  {{ credit.credits >= 0 ? '+' : '' }}{{ credit.credits }}
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Empty State -->
-          <div v-if="!paging?.total" class="text-center py-8">
-            <!-- <p class="text-gray-500 dark:text-gray-400">No credits transactions yet</p> -->
-            <Icon icon="ri:inbox-line" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p class="text-gray-500 dark:text-gray-400 text-lg">No credits transactions yet</p>
-            <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">
-              Your credits history will appear here
-            </p>
-          </div>
+          </template>
 
           <!-- Pagination -->
           <div v-if="paging.records.length > 0" class="mt-6 flex items-center justify-between">
@@ -65,6 +60,16 @@
                 <Icon icon="ri:arrow-right-s-line" class="w-5 h-5" />
               </button>
             </div>
+          </div>
+
+          <!-- Empty State -->
+          <div v-if="!paging?.total&&!isLoading" class="text-center py-8">
+            <!-- <p class="text-gray-500 dark:text-gray-400">No credits transactions yet</p> -->
+            <Icon icon="ri:inbox-line" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <p class="text-gray-500 dark:text-gray-400 text-lg">No credits transactions yet</p>
+            <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">
+              Your credits history will appear here
+            </p>
           </div>
         </div>
       </div>
@@ -84,6 +89,7 @@ import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import type { CreditBase } from '@/types/credits'
 import type { Paging } from '@/types/paging'
+import SkeletonLoader from '../components/ui/SkeletonLoader.vue'
 const userStore = useUserStore()
 const toastStore = useToastStore()
 const currentPage = ref(1)
@@ -96,14 +102,17 @@ const paging = ref<Paging<CreditBase>>({
   pages: 0
 })
 
+const isLoading = ref(true)
 const loadPage = async (page: number) => {
   try {
-    console.log('loadPage', page)
+    isLoading.value = true
     const result = await userStore.getCreditHistory(page, pageSize)
     paging.value = result!!
     currentPage.value = page
   } catch (error) {
     toastStore.showToast('Failed to load credits history', 'error')
+  } finally {
+    isLoading.value = false
   }
 }
 

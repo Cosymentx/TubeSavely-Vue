@@ -32,30 +32,34 @@
 
         <!-- Downloads List -->
         <div class="space-y-4">
-          <div v-for="video in paging.records" :key="video.id"
-            class="flex items-center justify-between p-4 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30 hover:bg-white/40 dark:hover:bg-gray-600/40 transition-all">
-            <div class="flex items-center space-x-4 flex-1">
-              <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center flex-shrink-0">
-                <Icon
-                  :icon="video.author === 'completed' ? 'ri:check-line' : video.author === 'failed' ? 'ri:close-line' : 'ri:download-line'"
-                  :class="[
-            'w-6 h-6',
-            video.author === 'completed' ? 'text-green-500' :
-              video.author === 'failed' ? 'text-[#f32b2b]' :
-                'text-[#f32b2b]'
-          ]" />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-gray-800 dark:text-white font-medium ">{{ video.title }}</p>
-                <div class="flex items-center space-x-4 mt-1">
-                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(video.created_at) }}</p>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ video.author }}</p>
-                  <!-- <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatSize(video?.size) }}</p> -->
+          <template v-if="isLoading">
+            <SkeletonLoader v-for="n in 5" :key="n" />
+          </template>
+          <template v-else>
+            <div v-for="video in paging.records" :key="video.id"
+              class="flex items-center justify-between p-4 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30 hover:bg-white/40 dark:hover:bg-gray-600/40 transition-all">
+              <div class="flex items-center space-x-4 flex-1">
+                <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center flex-shrink-0">
+                  <Icon
+                    :icon="video.author === 'completed' ? 'ri:check-line' : video.author === 'failed' ? 'ri:close-line' : 'ri:download-line'"
+                    :class="[
+                      'w-6 h-6',
+                      video.author === 'completed' ? 'text-green-500' :
+                        video.author === 'failed' ? 'text-[#f32b2b]' :
+                          'text-[#f32b2b]'
+                    ]" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-gray-800 dark:text-white font-medium ">{{ video.title }}</p>
+                  <div class="flex items-center space-x-4 mt-1">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(video.created_at) }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ video.author }}</p>
+                    <!-- <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatSize(video?.size) }}</p> -->
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="flex items-center space-x-2">
-              <!-- <button v-if="video.author === 'failed'" @click="retryDownload(video.id)"
+              <div class="flex items-center space-x-2">
+                <!-- <button v-if="video.author === 'failed'" @click="retryDownload(video.id)"
                 class="p-2 text-[#f32b2b] hover:bg-[#f32b2b]/10 rounded-lg transition-all" title="Retry Download">
                 <Icon icon="ri:refresh-line" class="w-5 h-5" />
               </button>
@@ -64,16 +68,17 @@
                 title="Open File">
                 <Icon icon="ri:folder-open-line" class="w-5 h-5" />
               </button> -->
-              <button @click="deleteVideo(video.id)"
-                class="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all"
-                title="Delete">
-                <Icon icon="ri:delete-bin-line" class="w-5 h-5" />
-              </button>
+                <button @click="deleteVideo(video.id)"
+                  class="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all"
+                  title="Delete">
+                  <Icon icon="ri:delete-bin-line" class="w-5 h-5" />
+                </button>
+              </div>
             </div>
-          </div>
+          </template>
 
           <!-- Empty State -->
-          <div v-if="paging.total === 0" class="text-center py-12">
+          <div v-if="!paging?.total&&!isLoading" class="text-center py-12">
             <Icon icon="ri:inbox-line" class="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <p class="text-gray-500 dark:text-gray-400 text-lg">No extraction history found</p>
             <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">
@@ -134,6 +139,7 @@ import type { Paging } from '@/types/paging'
 import BackgroundEffect from '../components/BackgroundEffect.vue'
 import Navigation from '../components/layout/Navigation.vue'
 import Footer from '../components/layout/Footer.vue'
+import SkeletonLoader from '../components/ui/SkeletonLoader.vue'
 
 // 删除确认对话框状态
 const showDeleteConfirm = ref(false)
@@ -152,14 +158,17 @@ const paging = ref<Paging<Video>>({
 })
 
 const currentPage = ref(1)
-
+const isLoading = ref(true)
 const loadPage = async (page: number) => {
   try {
+    isLoading.value = true
     const result = await vidoStore.getVideoHistory(page, pageSize)
     paging.value = result!!
-    currentPage.value = page
+    currentPage.value = page  
   } catch (error) {
     toastStore.showToast('Failed to load videos history', 'error')
+  } finally {
+    isLoading.value = false
   }
 }
 

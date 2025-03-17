@@ -233,19 +233,24 @@ const handleRecharge = async () => {
 
 // 添加轮询支付状态的函数
 const pollPaymentStatus = async (orderId: string) => {
-  const maxAttempts = 10 // 最多轮询10次
+  const maxAttempts = 30 // 最多轮询10次
   let attempts = 0
 
   const checkStatus = async () => {
     try {
       const { status } = await paymentStore.getPaymentStatus(orderId)
       if (status === 'pending') {
-
-        return
+        console.log('Payment is pending...')
+        // 继续轮询
+        attempts++
+        if (attempts < maxAttempts) {
+          setTimeout(checkStatus, 3000) // 每3秒检查一次
+        }
       } else
         if (status === 'completed') {
           // 支付成功
           toastStore.showToast('Payment successful!', 'success')
+          closeDialog()
           emit('success')
           return
         } else if (status === 'failed') {
@@ -256,12 +261,6 @@ const pollPaymentStatus = async (orderId: string) => {
           toastStore.showToast('Payment refunded. Please try again.', 'error')
           return
         }
-
-      // 继续轮询
-      attempts++
-      if (attempts < maxAttempts) {
-        setTimeout(checkStatus, 3000) // 每3秒检查一次
-      }
     } catch (error) {
       console.error('Failed to check payment status:', error)
     }

@@ -27,19 +27,28 @@
           </template>
           <template v-else>
             <div v-for="credit in paging.records" :key="credit.id"
-              class="bg-white/50 dark:bg-gray-800/50 p-4 rounded-xl border border-white/20 dark:border-gray-700/30 backdrop-blur-sm">
-              <div class="flex items-center justify-between">
-                <div class="mr-4">
-                  <h4 class="text-2xl font-medium text-gray-800 dark:text-white">{{ credit.action }}</h4>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ credit.description }}</p>
+              class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
+              <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center flex-shrink-0">
+                  <Icon :icon="credit.credits >= 0 ? 'ri:add-line' : 'ri:subtract-line'" :class="[
+                    'w-5 h-5',
+                    credit.credits >= 0 ? 'text-green-500' : 'text-[#f32b2b]'
+                  ]" />
+                </div>
+                <div>
+                  <p class="text-gray-800 dark:text-white font-medium">{{ credit.action }}</p>
+                  <p class="text-gray-800 dark:text-white text-sm">{{ credit.description }}</p>
                   <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(credit.created_at) }}</p>
                 </div>
-                <div :class="[
-                  'text-1xl font-semibold',
-                  credit.credits >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 text-[#f32b2b]'
+              </div>
+              <div class="text-right">
+                <p :class="[
+                  'text-lg font-semibold',
+                  credit.credits >= 0 ? 'text-green-600' : 'text-[#f32b2b]'
                 ]">
                   {{ credit.credits >= 0 ? '+' : '' }}{{ credit.credits }}
-                </div>
+                </p>
+                <p class="text-sm text-gray-500 whitespace-nowrap">Balance: {{ userStore.getCredits() }}</p>
               </div>
             </div>
           </template>

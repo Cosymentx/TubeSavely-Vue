@@ -17,7 +17,7 @@
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ userStore.localUser?.username }}</h1>
                 <p class="text-gray-600 dark:text-gray-300">{{ userStore.localUser?.email }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Member since {{
-            formatDate(userStore.localUser?.created_at) }}</p>
+                  formatDate(userStore.localUser?.created_at) }}</p>
               </div>
               <button @click="openEditProfile" class="btn-secondary">
                 <!-- Edit Profile -->
@@ -42,15 +42,17 @@
             </div>
           </div>
           <div class="space-y-4">
-            <div v-for="credit in recentCreditsHistory" :key="credit.id"
+            <template v-if="isLoadingCredits">
+              <SkeletonLoader />
+            </template>
+            <div v-else v-for="credit in recentCreditsHistory" :key="credit.id"
               class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center flex-shrink-0">
-                  <Icon :icon="credit.credits >= 0 ? 'ri:add-line' : 'ri:subtract-line'"
-                   :class="[
-            'w-5 h-5',
-            credit.credits >= 0 ? 'text-green-500' : 'text-[#f32b2b]'
-          ]" />
+                  <Icon :icon="credit.credits >= 0 ? 'ri:add-line' : 'ri:subtract-line'" :class="[
+                    'w-5 h-5',
+                    credit.credits >= 0 ? 'text-green-500' : 'text-[#f32b2b]'
+                  ]" />
                 </div>
                 <div>
                   <p class="text-gray-800 dark:text-white font-medium">{{ credit.action }}</p>
@@ -60,9 +62,9 @@
               </div>
               <div class="text-right">
                 <p :class="[
-            'text-lg font-semibold',
-            credit.credits >= 0 ? 'text-green-600' : 'text-[#f32b2b]'
-          ]">
+                  'text-lg font-semibold',
+                  credit.credits >= 0 ? 'text-green-600' : 'text-[#f32b2b]'
+                ]">
                   {{ credit.credits >= 0 ? '+' : '' }}{{ credit.credits }}
                 </p>
                 <p class="text-sm text-gray-500 whitespace-nowrap">Balance: {{ userStore.getCredits() }}</p>
@@ -100,21 +102,25 @@
             </RouterLink>
           </div>
           <div class="space-y-4">
-            <div v-for="video in recentVideoHistory" :key="video.id"
+            <template v-if="isLoadingVideos">
+              <SkeletonLoader v-for="n in 5" :key="n" />
+            </template>
+            <div v-else v-for="video in recentVideoHistory" :key="video.id"
               class="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-700/30 rounded-lg border border-white/10 dark:border-gray-600/30">
               <div class="flex items-center space-x-4">
                 <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center  flex-shrink-0">
                   <Icon
                     :icon="video.author === 'completed' ? 'ri:check-line' : video.author === 'failed' ? 'ri:close-line' : 'ri:download-line'"
                     :class="[
-            'w-5 h-5',
-            video.author === 'completed' ? 'text-green-500' :
-            video.author === 'failed' ? 'text-[#f32b2b]' :
-                'text-[#f32b2b]'
-          ]" />
+                      'w-5 h-5',
+                      video.author === 'completed' ? 'text-green-500' :
+                        video.author === 'failed' ? 'text-[#f32b2b]' :
+                          'text-[#f32b2b]'
+                    ]" />
                 </div>
                 <div>
-                  <p class="text-gray-800 dark:text-white font-medium">{{ video.title }} - <span>{{ video.author }}</span></p>
+                  <p class="text-gray-800 dark:text-white font-medium">{{ video.title }} - <span>{{ video.author
+                      }}</span></p>
                   <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(video.created_at) }}</p>
                 </div>
               </div>
@@ -124,7 +130,7 @@
               </div>
             </div>
 
-            <div v-if="recentVideoHistory.length === 0" class="text-center py-8">
+            <div v-if="recentVideoHistory.length === 0&&!isLoadingVideos" class="text-center py-8">
               <Icon icon="ri:inbox-line" class="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <p class="text-gray-500 dark:text-gray-400">No extraction history found yet</p>
             </div>
@@ -156,6 +162,7 @@ import Footer from '../components/layout/Footer.vue'
 import UserAvatar from '../components/user/UserAvatar.vue'
 import EditProfileDialog from '../components/user/EditProfileDialog.vue'
 import RechargeDialog from '../components/user/RechargeDialog.vue'
+import SkeletonLoader from '../components/ui/SkeletonLoader.vue'
 import type { CreditBase } from '@/types/credits'
 import type { Video } from '@/types/video'
 
@@ -165,31 +172,32 @@ const videoStore = useVideoStore()
 const isEditProfileOpen = ref(false)
 const isRechargeOpen = ref(false)
 
-// Mock data - 实际应该从API获取
-// const stats = ref({
-//   downloads: 42,
-//   savedVideos: 15,
-//   totalSize: 1024 * 1024 * 1024 * 2.5 // 2.5GB
-// })
-
 const recentCreditsHistory = ref<CreditBase[]>([])
 const recentVideoHistory = ref<Video[]>([])
+const isLoadingCredits = ref(true)
+const isLoadingVideos = ref(true)
 
 const getRecentCreditsHistory = async () => {
   try {
+    isLoadingCredits.value = true
     const result = await userStore.getCreditHistory(0, 1) // 只获取最近1条记录
     recentCreditsHistory.value = result?.records!!
   } catch (error) {
     toastStore.showToast('Failed to load credits history', 'error')
+  } finally {
+    isLoadingCredits.value = false
   }
 }
 
 const getRecentVideoHistory = async () => {
   try {
-    const result = await videoStore.getVideoHistory(0, 5) // 只获取最近1条记录
+    isLoadingVideos.value = true
+    const result = await videoStore.getVideoHistory(0, 5) // 只获取最近5条记录
     recentVideoHistory.value = result?.records!!
   } catch (error) {
     toastStore.showToast('Failed to load videos history', 'error')
+  } finally {
+    isLoadingVideos.value = false
   }
 }
 
@@ -212,7 +220,7 @@ const handleProfileSaved = () => {
 
 const openRechargeDialog = () => {
   isRechargeOpen.value = true
-} 
+}
 
 const closeRechargeDialog = () => {
   isRechargeOpen.value = false

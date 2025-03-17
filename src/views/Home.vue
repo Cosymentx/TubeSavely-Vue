@@ -220,6 +220,7 @@ import { useVideoStore } from '../stores/video'
 import { useUserStore } from '../stores/user'
 import { useToastStore } from '../stores/toast'
 import type { VideoFormat } from '../types/video'
+import { extractDouyinUrl } from '../utils/url'
 import Logo from '../components/logo.vue'
 import Navigation from '../components/layout/Navigation.vue'
 import BackgroundEffect from '../components/BackgroundEffect.vue'
@@ -279,7 +280,13 @@ const formatOptions = [
 const handlePaste = async () => {
   try {
     const text = await navigator.clipboard.readText()
-    videoStore.setVideoUrl(text)
+    let realVideoUrl = text
+    // 如果包含抖音域名，尝试提取真实链接
+    if (realVideoUrl.includes('douyin.com')) {
+      realVideoUrl = extractDouyinUrl(realVideoUrl) || realVideoUrl
+    }
+
+    videoStore.setVideoUrl(realVideoUrl)
   } catch (err) {
     console.error('Failed to paste from clipboard')
   }
@@ -314,16 +321,18 @@ const selectDefaultFormat = () => {
 // 修改 handleParse 方法
 const handleParse = async () => {
   if (videoStore.videoUrl) {
+    let url = videoStore.videoUrl
+
     // 验证URL格式
     const urlPattern = /^(https?:\/\/)?(([\.\w-]+)\.[a-z]{2,}|localhost)(:\d+)?(\/\S*)?$/i
-    const isValidUrl = urlPattern.test(videoStore.videoUrl)
+    const isValidUrl = urlPattern.test(url)
 
     if (!isValidUrl) {
       videoStore.error = 'Please enter a valid URL'
       return
     }
 
-    if (!videoStore.videoUrl.startsWith('http://') && !videoStore.videoUrl.startsWith('https://')) {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
       videoStore.error = 'URL must start with http:// or https://'
       return
     }

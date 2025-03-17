@@ -28,7 +28,7 @@
                       'p-4 rounded-lg border text-center transition-all duration-200 hover:scale-105',
                       selectedAmount?.credits === amount.credits
                         ? 'border-[#f32b2b] bg-[#f32b2b]/10 text-[#f32b2b] shadow-md'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
+                        : 'border-gray-300 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
                     ]">
                     <div class="text-lg font-medium">{{ amount.credits }} Credits</div>
                     <div class="text-sm text-gray-500 dark:text-gray-400">${{ amount.price }}</div>
@@ -47,7 +47,7 @@
                       'flex items-center justify-center p-5 rounded-lg border transition-all duration-200 hover:scale-105',
                       selectedPaymentMethod?.id === method.id
                         ? 'border-[#f32b2b] bg-[#f32b2b]/10 text-[#f32b2b] shadow-md'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
+                        : 'border-gray-300 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
                     ]">
                     <Icon :icon="method.icon" :class="[
                       'text-2xl mr-3',

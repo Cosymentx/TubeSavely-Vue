@@ -109,19 +109,23 @@
     <Footer />
 
     <!-- Delete Confirmation Dialog -->
-    <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
+    <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black/25 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="w-full max-w-sm transform overflow-hidden rounded-2xl bg-white/75 dark:bg-gray-800/80 backdrop-blur-2xl p-6 mx-4 text-left align-middle shadow-xl transition-all dark:border dark:border-gray-700/30">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Confirm Delete</h3>
         <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to delete this extraction record? This
           action cannot be undone.</p>
-        <div class="flex justify-end space-x-3">
-          <button @click="showDeleteConfirm = false"
-            class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all">
+        <div class="mt-6 flex justify-end space-x-4">
+          <button @click="showDeleteConfirm = false" class="btn-secondary">
             Cancel
           </button>
-          <button @click="confirmDelete()"
-            class="px-4 py-2 bg-[#f32b2b] text-white rounded-lg hover:bg-[#f32b2b]/90 transition-all">
-            Delete
+          <button @click="confirmDelete()" class="btn-primary flex items-center justify-center min-w-[80px]">
+            <template v-if="isDeleting === videoToDelete">
+              <Icon icon="ri:loader-4-line" class="w-5 h-5 mr-1 animate-spin" />
+              Deleting...
+            </template>
+            <template v-else>
+              Delete
+            </template>
           </button>
         </div>
       </div>
@@ -144,6 +148,7 @@ import SkeletonLoader from '../components/ui/SkeletonLoader.vue'
 // 删除确认对话框状态
 const showDeleteConfirm = ref(false)
 const videoToDelete = ref<number | null>(null)
+const isDeleting = ref<number | null>(null) // 跟踪正在删除的视频ID
 
 const toastStore = useToastStore()
 const vidoStore = useVideoStore()
@@ -179,8 +184,9 @@ const deleteVideo = (id: number) => {
 
 const confirmDelete = async () => {
   if (!videoToDelete.value) return
-
+  
   try {
+    isDeleting.value = videoToDelete.value // 设置正在删除的视频ID
     await vidoStore.deleteVideo(videoToDelete.value)
     // 从当前页面记录中移除已删除的视频
     paging.value.records = paging.value.records.filter(video => video.id !== videoToDelete.value)
@@ -194,13 +200,12 @@ const confirmDelete = async () => {
     else if (paging.value.records.length < pageSize && paging.value.total > 0) {
       await loadPage(currentPage.value)
     }
-
-    toastStore.showToast('Extraction deleted', 'success')
-  } catch (error) {
-    toastStore.showToast('Failed to delete extraction', 'error')
+  } catch (error) { 
+    console.error('Failed to delete video:', error)
   } finally {
     showDeleteConfirm.value = false
     videoToDelete.value = null
+    isDeleting.value = null // 重置正在删除的视频ID
   }
 }
 

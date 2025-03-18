@@ -53,11 +53,11 @@
             <span class="group-hover:text-[#f32b2b]">GitHub</span>
           </button>
 
-          <!-- <button @click="handleSocialLogin('wechat')" :disabled="isProcessingOAuth"
+          <button @click="handleSocialLogin('wechat')" :disabled="isProcessingOAuth"
             class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group col-span-2 disabled:opacity-50 disabled:cursor-not-allowed">
             <Icon icon="ri:wechat-fill" class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-[#f32b2b]" />
             <span class="group-hover:text-[#f32b2b]">WeChat</span>
-          </button> -->
+          </button>
           <button @click="handleSocialLogin('facebook')" :disabled="isProcessingOAuth"
             class="flex items-center justify-center gap-2 px-4 py-2.5 w-full bg-white/80 dark:bg-gray-800/50 hover:bg-gray-50/90 dark:hover:bg-gray-700/50 border border-gray-200/30 dark:border-gray-700/30 rounded-xl text-gray-700 dark:text-gray-300 font-medium transition-colors group col-span-2 disabled:opacity-50 disabled:cursor-not-allowed">
             <Icon icon="ri:facebook-fill" class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-[#f32b2b]" />

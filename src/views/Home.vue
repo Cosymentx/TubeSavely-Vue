@@ -55,10 +55,10 @@
                     <button v-for="option in formatOptions" :key="option.id" @click="selectFormatOption(option)"
                       class="w-full flex items-center gap-1.5 px-2 py-1.5 hover:bg-[#f32b2b]/5 transition-colors"
                       :class="[
-                        videoStore.format === option.id
-                          ? 'text-[#f32b2b] bg-[#f32b2b]/5'
-                          : 'text-gray-700 dark:text-gray-200'
-                      ]">
+                  videoStore.format === option.id
+                    ? 'text-[#f32b2b] bg-[#f32b2b]/5'
+                    : 'text-gray-700 dark:text-gray-200'
+                ]">
                       <Icon :icon="option.icon" class="w-4 h-4" />
                       <span class="text-xs font-medium">{{ option.label }}</span>
                     </button>
@@ -105,11 +105,11 @@
                 </div>
                 <div class="flex-1 min-w-0">
                   <h3 class="text-xl font-semibold text-gray-800 dark:text-white truncate">{{ videoStore.videoInfo.title
-                  }}</h3>
+                    }}</h3>
                   <div class="flex items-center gap-2 mt-2">
                     <Icon icon="ri:time-line" class="w-4 h-4 text-[#f32b2b]" />
                     <p class="text-sm text-gray-600 dark:text-gray-300">{{ formatDuration(videoStore.videoInfo.duration)
-                    }}</p>
+                      }}</p>
                   </div>
                   <div class="flex items-center gap-2 mt-1">
                     <Icon icon="ri:video-line" class="w-4 h-4 text-[#f32b2b]" />
@@ -122,12 +122,12 @@
                     <div class="flex items-center gap-2">
                       <Icon icon="ri:eye-line" class="w-4 h-4 text-[#f32b2b]" />
                       <span class="text-sm text-gray-600 dark:text-gray-300">{{
-                        formatNumber(videoStore.videoInfo.view_count || '0') }} views</span>
+                    formatNumber(videoStore.videoInfo.view_count || '0') }} views</span>
                     </div>
                     <div class="flex items-center gap-2">
                       <Icon icon="ri:thumb-up-line" class="w-4 h-4 text-[#f32b2b]" />
                       <span class="text-sm text-gray-600 dark:text-gray-300">{{
-                        formatNumber(videoStore.videoInfo.like_count || '0') }} likes</span>
+                  formatNumber(videoStore.videoInfo.like_count || '0') }} likes</span>
                     </div>
                   </div>
                 </div>
@@ -142,11 +142,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   <button v-for="format in filteredFormats" :key="format.format_id" @click="selectFormat(format)"
                     :class="[
-                      'px-4 py-3 rounded-lg text-sm font-medium transition-colors shadow-sm w-full',
-                      selectedFormat?.format_id === format.format_id
-                        ? 'bg-[#f32b2b]/10 text-[#f32b2b] border-2 border-[#f32b2b] shadow-[#f32b2b]/10'
-                        : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
-                    ]">
+                  'px-4 py-3 rounded-lg text-sm font-medium transition-colors shadow-sm w-full',
+                  selectedFormat?.format_id === format.format_id
+                    ? 'bg-[#f32b2b]/10 text-[#f32b2b] border-2 border-[#f32b2b] shadow-[#f32b2b]/10'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
+                ]">
                     <div class="flex flex-col items-start gap-1">
                       <div class="flex items-center justify-between w-full">
                         <span class="font-semibold">{{ format.format_note || `${format.height || 720}p` }}</span>
@@ -322,6 +322,10 @@ const selectDefaultFormat = () => {
 const handleParse = async () => {
   if (videoStore.videoUrl) {
     let url = videoStore.videoUrl
+
+    if (url.includes('douyin.com')) {
+      url = extractDouyinUrl(url) || url
+    }
 
     // 验证URL格式
     const urlPattern = /^(https?:\/\/)?(([\.\w-]+)\.[a-z]{2,}|localhost)(:\d+)?(\/\S*)?$/i

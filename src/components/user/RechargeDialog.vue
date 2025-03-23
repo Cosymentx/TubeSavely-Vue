@@ -143,17 +143,17 @@ const paymentMethods: PaymentMethod[] = [
     id: 'stripe',
     name: 'Stripe',
     icon: 'ri:bank-card-line'
-  },
-  {
-    id: 'paypal',
-    name: 'PayPal',
-    icon: 'ri:paypal-line'
-  },
-  {
-    id: 'airwallex',
-    name: 'Airwallex',
-    icon: 'ri:bank-card-line'
   }
+  // {
+  //   id: 'paypal',
+  //   name: 'PayPal',
+  //   icon: 'ri:paypal-line'
+  // },
+  // {
+  //   id: 'airwallex',
+  //   name: 'Airwallex',
+  //   icon: 'ri:bank-card-line'
+  // }
 ]
 
 const selectedAmount = ref<PaymentAmount | null>(null)

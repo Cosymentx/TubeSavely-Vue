@@ -83,12 +83,12 @@ export const usePaymentStore = defineStore('payment', () => {
     }
   }
 
-  const getPaymentHistory = async (page = 1, size = 10) => {
+  const getPaymentHistory = async (offset = 1, limit = 10) => {
     try {
       isLoading.value = true
       error.value = null
 
-      const response = await paymentService.getPaymentHistory(page, size)
+      const response = await paymentService.getPaymentHistory(offset, limit)
       paymentHistory.value = response.data.data!!
       return paymentHistory.value
     } catch (err: any) {

@@ -6,12 +6,12 @@ export const createCreditsService = (api: AxiosInstance) => {
   return {
     /**
      * 获取积分历史记录
-     * @param page 页码
-     * @param size 每页数量
+     * @param offset 页码
+     * @param limit 每页数量
      */
-    getCreditHistory: (page: number = 0, size: number = 20)  : ApiResult<Paging<CreditBase>> => {
+    getCreditHistory: (offset: number = 0, limit: number = 20)  : ApiResult<Paging<CreditBase>> => {
       return api.get('/credits/history', {
-        params: { page, size }
+        params: { offset, limit }
       })
     },
 

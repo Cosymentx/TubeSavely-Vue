@@ -15,9 +15,9 @@ export const createVideoService = (api: AxiosInstance) => ({
     return api.get(`/videos/formats?url=${encodeURIComponent(url)}`)
   },
   
-  getVideoHistory: (page: number = 0, size: number = 20): ApiResult<Paging<Video>> => {
+  getVideoHistory: (offset: number = 0, limit: number = 20): ApiResult<Paging<Video>> => {
     return api.get('/videos/history', {
-      params: { page, size }
+      params: { offset, limit }
     })
   },
 

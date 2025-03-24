@@ -28,8 +28,8 @@ export const createPaymentService = (api: AxiosInstance) => ({
     return api.post(`/payments/verify/${orderId}`)
   },
 
-  getPaymentHistory: (page = 1, size = 10): ApiResult<Paging<Payment>> => {
-    return api.get(`/payments/history?page=${page}&limit=${size}`)
+  getPaymentHistory: (offset = 1, limit = 10): ApiResult<Paging<Payment>> => {
+    return api.get(`/payments/history?page=${offset}&limit=${limit}`)
   },
 
   getCreditAmounts: (): ApiResult<CreditAmount[]> => {

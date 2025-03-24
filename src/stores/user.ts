@@ -289,9 +289,9 @@ export const useUserStore = defineStore('user', () => {
     return !!localUser.value && !!localStorage.getItem('token')
   })
 
-  const getCreditHistory = async (page: number = 0, size: number = 10) => {
+  const getCreditHistory = async (offset: number = 0, limit: number = 10) => {
     try {
-      const response = await creditsService.getCreditHistory(page, size)
+      const response = await creditsService.getCreditHistory(offset, limit)
       return response.data.data
     } catch (error) {
       console.error('Failed to fetch credit history:', error)

@@ -168,10 +168,10 @@ export const useVideoStore = defineStore('video', () => {
     await fetchVideoInfo(videoUrl.value)
   }
 
-  const getVideoHistory = async (page: number = 0, size: number = 10) => {
+  const getVideoHistory = async (offset: number = 0, limit: number = 10) => {
     try {
       isLoading.value = true
-      const response = await videoService.getVideoHistory(page, size)
+      const response = await videoService.getVideoHistory(offset, limit)
       if (response.data.code === 200) {
         return response.data.data
       } else {

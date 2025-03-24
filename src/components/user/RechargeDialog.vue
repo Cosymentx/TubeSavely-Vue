@@ -31,7 +31,7 @@
                         : 'border-gray-300 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
                     ]">
                     <div class="text-lg font-medium">{{ amount.credits }} Credits</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">${{ amount.price }}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ amount.symbol }} {{ amount.amount_cny }}</div>
                   </button>
                 </div>
               </div>
@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import {
   Dialog,
   DialogPanel,
@@ -104,8 +104,9 @@ import {
 } from '@headlessui/vue'
 import { useToastStore } from '../../stores/toast'
 import { usePaymentStore } from '../../stores/payment'
-import type { PaymentAmount, PaymentMethod, PaymentMethodType } from '../../types/payment'
+import type { CreditAmount, PaymentMethod, PaymentMethodType } from '../../types/payment'
 import { Icon } from '@iconify/vue'
+import { detectUserCurrency} from '../../utils/currency'
 
 const toastStore = useToastStore()
 const paymentStore = usePaymentStore()
@@ -122,11 +123,7 @@ const emit = defineEmits<{
 const isLoading = ref(false)
 const error = ref('')
 
-const predefinedAmounts: PaymentAmount[] = [
-  { credits: 100, price: 10 },
-  { credits: 500, price: 45 },
-  { credits: 1000, price: 85 }
-]
+const predefinedAmounts = ref<CreditAmount[]>([])
 
 const paymentMethods: PaymentMethod[] = [
   {
@@ -156,15 +153,38 @@ const paymentMethods: PaymentMethod[] = [
   // }
 ]
 
-const selectedAmount = ref<PaymentAmount | null>(null)
+const selectedAmount = ref<CreditAmount | null>()
 const selectedPaymentMethod = ref<PaymentMethod | null>(null)
 
 // Watch for dialog open state changes
 watch(() => props.isOpen, (newValue) => {
   if (newValue) {
-    // When dialog opens, set default selections
-    selectedAmount.value = predefinedAmounts[0]
+    // When dialog opens, set default selections and detect user currency
+    detectUserCurrency()
+    selectedAmount.value = predefinedAmounts.value[0]
     selectedPaymentMethod.value = paymentMethods[0]
+  }
+})
+
+onMounted(async () => {
+  try {
+    // 获取价格列表
+    const response = await paymentStore.getCreditsAmount()
+    if (response) {
+
+      // 过滤出激活的价格选项并转换为PaymentAmount格式
+      predefinedAmounts.value = response.filter(item => item.is_active)
+
+      const userCurrency = await detectUserCurrency()
+      predefinedAmounts.value.forEach((item) => {
+        item.currency = userCurrency.code
+        item.symbol = userCurrency.symbol
+        item.amount = userCurrency.code === 'CNY' ? item.amount_cny : item.amount_usd
+      })
+    }
+  } catch (err) {
+    console.error('Failed to fetch credit amounts:', err)
+    toastStore.showToast('Failed to load credit amounts', 'error')
   }
 })
 
@@ -182,18 +202,14 @@ const handleRecharge = async () => {
   try {
     isLoading.value = true
     const response = await paymentStore.createPayment(
-      selectedAmount.value.price,
-      selectedAmount.value.credits,
+      selectedAmount.value.id,
+      selectedAmount.value.currency!!,
       selectedPaymentMethod.value.id as PaymentMethodType
     )
 
     if (!response) {
       throw new Error('Payment initiation failed')
     }
-
-    // 只关闭弹框，不触发成功回调
-    // closeDialog()
-
 
     // 根据不同支付方式处理跳转
     switch (selectedPaymentMethod.value.id) {

@@ -8,23 +8,31 @@ export interface PaymentMethod {
   icon: string
 }
 
-// 预定义金额选项
-export interface PaymentAmount {
+// 信用点数价格配置
+export interface CreditAmount {
+  id: number
   credits: number
-  price: number
+  amount_cny: number
+  amount_usd: number
+  is_active: boolean 
+  currency?: string
+  symbol?: string
   amount?: number
-  discount?: number
+  created_at: string
+  updated_at: string
 }
 
 // 基础支付信息
 export interface PaymentBase {
-  credits: number
-  amount: number
+  // credits: number
+  // amount: number
   payment_method: PaymentMethodType
 }
 
 // 创建支付请求
 export interface PaymentCreate extends PaymentBase {
+  credit_amount_id?: number
+  currency?: string
 }
 
 // 创建支付响应
@@ -67,4 +75,4 @@ export interface PaymentHistory {
   total: number
   page: number
   limit: number
-} 
+}

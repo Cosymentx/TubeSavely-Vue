@@ -140,6 +140,11 @@ const paymentMethods: PaymentMethod[] = [
     id: 'stripe',
     name: 'Stripe',
     icon: 'ri:bank-card-line'
+  },
+  {
+    id: 'creem',
+    name: 'Creem',
+    icon: 'ri:bank-card-line'
   }
   // {
   //   id: 'paypal',
@@ -232,6 +237,7 @@ const handleRecharge = async () => {
       case 'paypal':
       case 'stripe':
       case 'airwallex':
+      case 'creem':
         // PayPal、Stripe和Airwallex使用重定向方式
         // 将回调URL添加state参数，用于标识支付来源
         const returnUrl = new URL(response.payment_url)

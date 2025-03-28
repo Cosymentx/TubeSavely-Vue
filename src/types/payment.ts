@@ -1,4 +1,4 @@
-export type PaymentMethodType = 'alipay' | 'wechat' | 'stripe' | 'paypal' | 'airwallex'
+export type PaymentMethodType = 'alipay' | 'wechat' | 'stripe' | 'paypal' | 'airwallex' | 'creem'
 export type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed'
 
 // 支付方式定义
@@ -14,7 +14,7 @@ export interface CreditAmount {
   credits: number
   amount_cny: number
   amount_usd: number
-  is_active: boolean 
+  is_active: boolean
   currency?: string
   symbol?: string
   amount?: number

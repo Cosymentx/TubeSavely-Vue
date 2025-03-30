@@ -105,7 +105,7 @@ import {
 import { useToastStore } from '../../stores/toast'
 import { usePaymentStore } from '../../stores/payment'
 import type { CreditAmount, PaymentMethod, PaymentMethodType } from '../../types/payment'
-import { Icon } from '@iconify/vue'
+// import { Icon } from '@iconify/vue'
 import { detectUserCurrency} from '../../utils/currency'
 
 const toastStore = useToastStore()
@@ -170,7 +170,7 @@ watch(() => props.isOpen, async (newValue) => {
     if(userCurrency.code === 'CNY') {
       selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'alipay')[0]
     } else {
-      selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'stripe')[0]
+      selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'creem')[0]
     }
   }
 })  

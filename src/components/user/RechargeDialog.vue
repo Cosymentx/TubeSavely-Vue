@@ -37,7 +37,7 @@
               </div>
 
               <!-- Payment Method Selection -->
-              <div class="mb-8">
+              <!-- <div class="mb-8">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Payment Method
                 </label>
@@ -61,7 +61,7 @@
                     <span class="text-base font-medium">{{ method.name }}</span>
                   </button>
                 </div>
-              </div>
+              </div> -->
 
               <!-- Loading State -->
               <div v-if="isLoading" class="flex items-center justify-center py-4">
@@ -162,14 +162,18 @@ const selectedAmount = ref<CreditAmount | null>()
 const selectedPaymentMethod = ref<PaymentMethod | null>(null)
 
 // Watch for dialog open state changes
-watch(() => props.isOpen, (newValue) => {
+watch(() => props.isOpen, async (newValue) => {
   if (newValue) {
     // When dialog opens, set default selections and detect user currency
-    detectUserCurrency()
     selectedAmount.value = predefinedAmounts.value[0]
-    selectedPaymentMethod.value = paymentMethods[0]
+    const userCurrency = await detectUserCurrency()
+    if(userCurrency.code === 'CNY') {
+      selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'alipay')[0]
+    } else {
+      selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'stripe')[0]
+    }
   }
-})
+})  
 
 onMounted(async () => {
   try {

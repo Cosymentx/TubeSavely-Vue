@@ -170,7 +170,7 @@ watch(() => props.isOpen, async (newValue) => {
     if(userCurrency.code === 'CNY') {
       selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'alipay')[0]
     } else {
-      selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'creem')[0]
+      selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'stripe')[0]
     }
   }
 })  

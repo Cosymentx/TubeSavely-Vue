@@ -103,14 +103,14 @@ const credits = ref<number>()
 const errorMessage = ref<string>()
 
 onMounted(async () => {
-  const order_id = route.query.order_id as string
+  const order_id = route.query.internal_order_id as string
   const status = route.query.status as string
 
   if (status === 'success' && order_id) {
     try {
       const result = await paymentStore.getPaymentStatus(order_id)
       if (result) {
-        success.value = true
+        success.value = result.status === 'completed'
         amount.value = result.amount
         credits.value = result.credits
         // 更新用户积分
@@ -124,7 +124,6 @@ onMounted(async () => {
     }
   } else {
     success.value = false
-
     errorMessage.value = 'Payment incomplete'
   }
   // Set loading to false after payment status check

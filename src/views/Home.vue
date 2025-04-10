@@ -220,7 +220,7 @@ import { useVideoStore } from '../stores/video'
 import { useUserStore } from '../stores/user'
 import { useToastStore } from '../stores/toast'
 import type { VideoFormat } from '../types/video'
-import { extractDouyinUrl } from '../utils/url'
+import {isValidUrl, extractDouyinUrl } from '../utils/url'
 import Logo from '../components/logo.vue'
 import Navigation from '../components/layout/Navigation.vue'
 import BackgroundEffect from '../components/BackgroundEffect.vue'
@@ -280,7 +280,13 @@ const formatOptions = [
 const handlePaste = async () => {
   try {
     const text = await navigator.clipboard.readText()
+    console.log('Pasted text:', text)
+    if (!isValidUrl(text)) {
+      videoStore.error = 'Please enter a valid URL'
+      return
+    }
     let realVideoUrl = text
+
     // 如果包含抖音域名，尝试提取真实链接
     if (realVideoUrl.includes('douyin.com')) {
       realVideoUrl = extractDouyinUrl(realVideoUrl) || realVideoUrl
@@ -321,19 +327,15 @@ const selectDefaultFormat = () => {
 // 修改 handleParse 方法
 const handleParse = async () => {
   if (videoStore.videoUrl) {
+
     let url = videoStore.videoUrl
+    if (!isValidUrl(url)) {
+      videoStore.error = 'Please enter a valid URL'
+      return
+    }
 
     if (url.includes('douyin.com')) {
       url = extractDouyinUrl(url) || url
-    }
-
-    // 验证URL格式
-    const urlPattern = /^(https?:\/\/)?(([\.\w-]+)\.[a-z]{2,}|localhost)(:\d+)?(\/\S*)?$/i
-    const isValidUrl = urlPattern.test(url)
-
-    if (!isValidUrl) {
-      videoStore.error = 'Please enter a valid URL'
-      return
     }
 
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
@@ -447,9 +449,6 @@ const handleDownload = async () => {
 
     // 开始下载
     window.open(selectedFormat.value.url, '_blank')
-
-    // 扣除积分
-    await userStore.deductCredits(3)
 
     // 如果启用了通知
     if (notifications) {

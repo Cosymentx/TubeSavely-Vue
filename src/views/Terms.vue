@@ -1,3 +1,4 @@
+
 <template>
   <div class="relative min-h-screen overflow-hidden">
     <BackgroundEffect />
@@ -40,12 +41,16 @@
 
             <div class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
               <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">3. Fair Use Policy</h2>
+              <p class="text-gray-600 dark:text-gray-300 mb-3">
+                "Fair use" or "fair dealing" varies by country and jurisdiction. The following guidelines apply, but users must verify what is permitted in their location:
+              </p>
               <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
                 <li>Only download content that you have the right to access</li>
                 <li>Use downloaded content in accordance with applicable laws</li>
                 <li>Do not distribute copyrighted material without permission</li>
                 <li>Respect content creators and their intellectual property rights</li>
                 <li>Use downloaded content for personal, non-commercial purposes only</li>
+                <li>Be aware that downloading may violate platform Terms of Service</li>
                 <li>Report any misuse or abuse of the service that you encounter</li>
               </ul>
             </div>
@@ -74,11 +79,31 @@
                 <li>Updates to this terms page</li>
               </ul>
             </div>
+
+            <div class="bg-white/50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700 mt-4">
+              <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">6. Regional Restrictions</h2>
+              <p class="text-gray-600 dark:text-gray-300 mb-3">
+                TubeSavely's services may not be available or legal in all jurisdictions. Users are responsible for:
+              </p>
+              <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                <li>Verifying that use of this service is legal in their jurisdiction</li>
+                <li>Understanding that laws regarding copyright and digital content vary by country</li>
+                <li>Acknowledging that certain features may be restricted in some regions</li>
+                <li>Complying with all local laws regarding content downloading and usage</li>
+              </ul>
+            </div>
           </div>
 
           <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 p-4 rounded-lg mt-8">
             <p class="text-yellow-800 dark:text-yellow-200 text-sm">
               <strong>Note:</strong> These terms are subject to change. Last updated: {{ formattedDate }}
+            </p>
+          </div>
+
+          <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 p-4 rounded-lg mt-8">
+            <h3 class="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Disclaimer</h3>
+            <p class="text-yellow-800 dark:text-yellow-200 text-sm">
+              TubeSavely provides this service "as is" without any warranties. We do not endorse or encourage copyright infringement. Users assume all legal responsibility for how they use this service. TubeSavely is not liable for any misuse of the service or any consequences resulting from such misuse. Many platforms explicitly prohibit the use of download tools in their Terms of Service - using TubeSavely may violate these terms.
             </p>
           </div>
 

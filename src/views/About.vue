@@ -1,3 +1,4 @@
+
 <template>
   <div class="relative min-h-screen overflow-hidden">
     <BackgroundEffect />
@@ -109,9 +110,11 @@
           <!-- 免责声明 -->
           <section class="mt-12 p-6 rounded-xl bg-gray-50/50 dark:bg-gray-700/30 border border-gray-200/10 dark:border-gray-600/10">
             <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Legal Notice</h2>
+            <p class="text-sm mb-2">
+              TubeSavely is designed for downloading videos that are either in the public domain, under open licenses, or that you have explicit permission to download. Please respect copyright laws and content creators' rights. We do not host any copyrighted content on our servers.
+            </p>
             <p class="text-sm">
-              TubeSavely is designed for downloading videos that are either in the public domain or that you have permission to download. 
-              Please respect copyright laws and content creators' rights. We do not host any copyrighted content on our servers.
+              Please be aware that using this tool may violate the Terms of Service of certain platforms. Users are responsible for ensuring their use complies with all applicable laws and platform policies in their jurisdiction.
             </p>
           </section>
         </div>

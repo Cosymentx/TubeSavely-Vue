@@ -20,7 +20,7 @@
 
           <div>
             <label class="block text-gray-600 dark:text-gray-300 mb-2">Password</label>
-            <input v-model="form.password" type="password" required class="form-input" />
+            <input v-model="form.password" type="password" required class="form-input" autocomplete="current-password" />
           </div>
 
           <button type="submit" :disabled="userStore.isLoading" class="w-full btn-primary">

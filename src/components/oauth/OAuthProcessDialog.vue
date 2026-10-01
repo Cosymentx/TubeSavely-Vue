@@ -26,7 +26,7 @@
             leave-from="opacity-100 scale-100"
             leave-to="opacity-0 scale-95"
           >
-            <DialogPanel class="w-full max-w-sm transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 py-8 px-6 text-center shadow-xl transition-all">
+            <DialogPanel tabindex="-1" class="w-full max-w-sm transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 py-8 px-6 text-center shadow-xl transition-all">
               <!-- Success State -->
               <Transition 
                 enter-active-class="transition duration-300 ease-out" 

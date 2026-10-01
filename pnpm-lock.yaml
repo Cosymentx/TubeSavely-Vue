@@ -48,9 +48,6 @@ importers:
       vite:
         specifier: 6.0.9
         version: 6.0.9(@types/node@22.13.8)(jiti@1.21.7)(yaml@2.7.0)
-      vue-toastification:
-        specifier: ^1.7.14
-        version: 1.7.14(vue@3.5.13(typescript@5.8.2))
       vue-tsc:
         specifier: ^2.2.6
         version: 2.2.6(typescript@5.8.2)
@@ -1035,11 +1032,6 @@ packages:
     peerDependencies:
       vue: ^3.2.0
 
-  vue-toastification@1.7.14:
-    resolution: {integrity: sha512-khZR8t3NWZ/JJ2MZxXLbesHrRJ8AKa75PY5Zq8yMifF9x8lHq8ljYkC0d2PD9yahooygQB5tcFyRDkbbIPx8hw==}
-    peerDependencies:
-      vue: ^2.0.0
-
   vue-tsc@2.2.6:
     resolution: {integrity: sha512-TI6eAnWPatONEpVAZt1etbSrh8tDpHOLSlRqKGudOK5WKVnBGzHXUi0KR4UCsf2o5P+5285w4HF+5avhfH7IMA==}
     hasBin: true
@@ -1927,10 +1919,6 @@ snapshots:
   vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)):
     dependencies:
       '@vue/devtools-api': 6.6.4
-      vue: 3.5.13(typescript@5.8.2)
-
-  vue-toastification@1.7.14(vue@3.5.13(typescript@5.8.2)):
-    dependencies:
       vue: 3.5.13(typescript@5.8.2)
 
   vue-tsc@2.2.6(typescript@5.8.2):

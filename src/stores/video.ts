@@ -110,7 +110,7 @@ export const useVideoStore = defineStore('video', () => {
     }
   }
 
-  const downloadVideo = async () => {
+  const downloadVideo = async (selectedFormat: VideoFormat) => {
     if (!userStore.isLoggedIn) {
       toastStore.showToast('Please login to download', 'error')
       return
@@ -121,31 +121,26 @@ export const useVideoStore = defineStore('video', () => {
       return
     }
 
-    if (!videoUrl.value) return
+    if (!videoUrl.value || !selectedFormat.url) return
 
     try {
       downloadStatus.value = 'downloading'
-      await userStore.deductCredits(3)
       downloadProgress.value = 0
 
-      // 获取选中格式的URL
-      const selectedFormat = availableFormats.value.find(f => f.format_id === format.value)
-      if (!selectedFormat && format.value !== 'auto') {
-        throw new Error('Selected format not found')
-      }
-
-      const response = await api.post('/download', {
-        url: selectedFormat?.url || videoUrl.value,
-        format: format.value
-      }, {
-        responseType: 'blob'  // Add this to get binary data
+      // The download endpoint is the sole source of truth for authorization,
+      // credit deduction, and file delivery.
+      const blob = await videoService.download(videoUrl.value, {
+        format_id: selectedFormat.format_id,
+        quality: selectedFormat.quality
+      }, progress => {
+        downloadProgress.value = progress
       })
 
-      const fileName = videoInfo.value?.title || 'video'
-      const extension = format.value === 'audio' ? 'mp3' : 'mp4'
+      const fileName = (videoInfo.value?.title || 'video').replace(/[\\/:*?"<>|]/g, '_')
+      const extension = selectedFormat.ext || 'mp4'
 
       // 创建下载链接
-      const url = window.URL.createObjectURL(response.data)  // response.data is already a Blob
+      const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', `${fileName}.${extension}`)

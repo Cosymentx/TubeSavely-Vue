@@ -205,16 +205,10 @@ pnpm build
 pnpm preview
 ```
 
-### 代码检查
+### 类型检查
 
 ```bash
-pnpm lint
-```
-
-### 运行测试
-
-```bash
-pnpm test
+pnpm typecheck
 ```
 
 ## 代码规范

@@ -21,4 +21,10 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw? 
+*.sw?
+
+# Secrets and local runtime configuration
+.env
+.env.*
+!.env.example
+client_secret*.json

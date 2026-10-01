@@ -5,7 +5,7 @@ export type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed'
 export interface PaymentMethod {
   id: PaymentMethodType
   name: string
-  icon: string
+  currencies: Array<'CNY' | 'USD'>
 }
 
 // 信用点数价格配置
@@ -38,7 +38,8 @@ export interface PaymentCreate extends PaymentBase {
 // 创建支付响应
 export interface PaymentResponse {
   order_id: string
-  amount: number
+  amount: number | string
+  currency: 'CNY' | 'USD'
   credits: number
   payment_url: string
 }
@@ -49,9 +50,10 @@ export interface Payment extends PaymentBase {
   user_id: number
   order_id: string
   status: PaymentStatus
-  transaction_id?: string
-  error_message?: string
-  credits_cost: number
+  amount: number | string
+  currency: 'CNY' | 'USD'
+  credits: number
+  trade_no?: string
   created_at: string
   updated_at: string
   paid_at?: string

@@ -5,7 +5,8 @@ import type {
   PaymentResponse,
   Payment,
   PaymentResult,
-  CreditAmount
+  CreditAmount,
+  PaymentMethod
 } from '../types/payment'
 import { Paging } from '@/types/paging'
 
@@ -34,5 +35,9 @@ export const createPaymentService = (api: AxiosInstance) => ({
 
   getCreditAmounts: (): ApiResult<CreditAmount[]> => {
     return api.get('/credit_amount/list')
+  },
+
+  getPaymentMethods: (): ApiResult<PaymentMethod[]> => {
+    return api.get('/payments/methods')
   }
 })

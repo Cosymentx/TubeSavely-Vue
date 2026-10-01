@@ -9,7 +9,7 @@ export const createInterceptors = (api: AxiosInstance, toastStore: ToastStore) =
       const token = localStorage.getItem('token')
       // 确保 headers 对象存在
       config.headers = config.headers || {}
-      
+
       // 对所有非登录请求添加认证头
       if (token && !config.url?.includes('/auth/login')) {
         // 设置认证头
@@ -18,12 +18,12 @@ export const createInterceptors = (api: AxiosInstance, toastStore: ToastStore) =
 
       // 全局请求配置
       config.maxRedirects = 0  // 禁止自动重定向
-      config.withCredentials = true  // 允许跨域请求携带凭证
+      config.withCredentials = false  // 允许跨域请求携带凭证
       config.validateStatus = function (status) {
         // 自定义响应状态码的验证
         return status >= 200 && status < 300 || status === 307  // 允许307状态码
       }
-      
+
       return config
     },
     (error) => {

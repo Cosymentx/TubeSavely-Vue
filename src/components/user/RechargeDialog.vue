@@ -17,30 +17,34 @@
                 Recharge Credits
               </DialogTitle>
 
-              <!-- Amount Selection -->
               <div class="mb-8">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Select Amount
+                <label class="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Currency
+                  <select v-model="currencyCode" class="ml-3 rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
+                    <option value="CNY">CNY (¥)</option>
+                    <option value="USD">USD ($)</option>
+                  </select>
                 </label>
-                <div class="grid grid-cols-3 gap-4">
-                  <button v-for="amount in predefinedAmounts" :key="amount.credits" @click="selectedAmount = amount"
+                <p class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Select credits</p>
+                <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+                  <button v-for="amount in predefinedAmounts" :key="amount.id" @click="selectedAmount = amount"
                     :class="[
                       'p-4 rounded-lg border text-center transition-all duration-200 hover:scale-105',
-                      selectedAmount?.credits === amount.credits
+                      selectedAmount?.id === amount.id
                         ? 'border-[#f32b2b] bg-[#f32b2b]/10 text-[#f32b2b] shadow-md'
                         : 'border-gray-300 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
                     ]">
                     <div class="text-lg font-medium">{{ amount.credits }} Credits</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ amount.symbol }} {{ amount.amount_cny }}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                      {{ currencyCode === 'CNY' ? '¥' : '$' }} {{ formatAmount(amount) }}
+                    </div>
                   </button>
                 </div>
               </div>
 
-              <!-- Payment Method Selection -->
-              <!-- <div class="mb-8">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Payment Method
-                </label>
+              <div class="mb-8">
+                <p class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Payment method</p>
+                <p v-if="paymentMethods.length === 0" class="text-sm text-gray-500">No payment method is available for this currency.</p>
                 <div class="grid grid-cols-2 gap-4">
                   <button v-for="method in paymentMethods" :key="method.id" @click="selectedPaymentMethod = method"
                     :class="[
@@ -49,19 +53,11 @@
                         ? 'border-[#f32b2b] bg-[#f32b2b]/10 text-[#f32b2b] shadow-md'
                         : 'border-gray-300 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
                     ]">
-                    <Icon :icon="method.icon" :class="[
-                      'text-2xl mr-3',
-                      selectedPaymentMethod?.id === method.id ? 'text-[#f32b2b]' : {
-                        'text-[#1677FF]': method.id === 'alipay',
-                        'text-[#07C160]': method.id === 'wechat',
-                        'text-[#635BFF]': method.id === 'stripe',
-                        'text-[#003087]': method.id === 'paypal'
-                      }
-                    ]" />
+                    <span aria-hidden="true" class="mr-3 text-xl">{{ method.id === 'alipay' ? '◈' : '▣' }}</span>
                     <span class="text-base font-medium">{{ method.name }}</span>
                   </button>
                 </div>
-              </div> -->
+              </div>
 
               <!-- Loading State -->
               <div v-if="isLoading" class="flex items-center justify-center py-4">
@@ -94,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import {
   Dialog,
   DialogPanel,
@@ -105,8 +101,6 @@ import {
 import { useToastStore } from '../../stores/toast'
 import { usePaymentStore } from '../../stores/payment'
 import type { CreditAmount, PaymentMethod, PaymentMethodType } from '../../types/payment'
-// import { Icon } from '@iconify/vue'
-import { detectUserCurrency} from '../../utils/currency'
 
 const toastStore = useToastStore()
 const paymentStore = usePaymentStore()
@@ -125,75 +119,39 @@ const error = ref('')
 
 const predefinedAmounts = ref<CreditAmount[]>([])
 
-const paymentMethods: PaymentMethod[] = [
-  {
-    id: 'alipay',
-    name: 'Alipay',
-    icon: 'ri:alipay-line'
-  },
-  // {
-  //   id: 'wechat',
-  //   name: 'WeChat Pay',
-  //   icon: 'ri:wechat-pay-line'
-  // },
-  {
-    id: 'stripe',
-    name: 'Stripe',
-    icon: 'ri:bank-card-line'
-  },
-  {
-    id: 'creem',
-    name: 'Creem',
-    icon: 'ri:bank-card-line'
-  }
-  // {
-  //   id: 'paypal',
-  //   name: 'PayPal',
-  //   icon: 'ri:paypal-line'
-  // },
-  // {
-  //   id: 'airwallex',
-  //   name: 'Airwallex',
-  //   icon: 'ri:bank-card-line'
-  // }
-]
-
-const selectedAmount = ref<CreditAmount | null>()
+const configuredMethods = ref<PaymentMethod[]>([])
+const currencyCode = ref<'CNY' | 'USD'>(navigator.language.toLowerCase().startsWith('zh') ? 'CNY' : 'USD')
+const paymentMethods = computed(() => configuredMethods.value.filter(method => method.currencies.includes(currencyCode.value)))
+const formatAmount = (amount: CreditAmount) => (currencyCode.value === 'CNY' ? amount.amount_cny : amount.amount_usd).toFixed(2)
+const selectedAmount = ref<CreditAmount | null>(null)
 const selectedPaymentMethod = ref<PaymentMethod | null>(null)
 
-// Watch for dialog open state changes
-watch(() => props.isOpen, async (newValue) => {
-  if (newValue) {
-    // When dialog opens, set default selections and detect user currency
+const selectDefaultPaymentMethod = () => {
+  selectedPaymentMethod.value = paymentMethods.value.find(method => method.id === (currencyCode.value === 'CNY' ? 'alipay' : 'stripe'))
+    ?? paymentMethods.value[0]
+    ?? null
+}
+
+watch(currencyCode, selectDefaultPaymentMethod)
+watch(() => props.isOpen, (open) => {
+  if (open && predefinedAmounts.value.length > 0) {
     selectedAmount.value = predefinedAmounts.value[0]
-    const userCurrency = await detectUserCurrency()
-    if(userCurrency.code === 'CNY') {
-      selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'alipay')[0]
-    } else {
-      selectedPaymentMethod.value = paymentMethods.filter(item => item.id === 'stripe')[0]
-    }
+    selectDefaultPaymentMethod()
   }
-})  
+})
 
 onMounted(async () => {
   try {
-    // 获取价格列表
-    const response = await paymentStore.getCreditsAmount()
-    if (response) {
-
-      // 过滤出激活的价格选项并转换为PaymentAmount格式
-      predefinedAmounts.value = response.filter(item => item.is_active)
-
-      const userCurrency = await detectUserCurrency()
-      predefinedAmounts.value.forEach((item) => {
-        item.currency = userCurrency.code
-        item.symbol = userCurrency.symbol
-        item.amount = userCurrency.code === 'CNY' ? item.amount_cny : item.amount_usd
-      })
-    }
-  } catch (err) {
-    console.error('Failed to fetch credit amounts:', err)
-    toastStore.showToast('Failed to load credit amounts', 'error')
+    const [prices, methods] = await Promise.all([
+      paymentStore.getCreditsAmount(),
+      paymentStore.getPaymentMethods(),
+    ])
+    predefinedAmounts.value = (prices ?? []).filter(item => item.is_active)
+    configuredMethods.value = methods ?? []
+    selectDefaultPaymentMethod()
+    if (props.isOpen) selectedAmount.value = predefinedAmounts.value[0] ?? null
+  } catch {
+    toastStore.showToast('Could not load credit packages or payment methods', 'error')
   }
 })
 
@@ -212,7 +170,7 @@ const handleRecharge = async () => {
     isLoading.value = true
     const response = await paymentStore.createPayment(
       selectedAmount.value.id,
-      selectedAmount.value.currency!!,
+      currencyCode.value,
       selectedPaymentMethod.value.id as PaymentMethodType
     )
 
@@ -223,12 +181,7 @@ const handleRecharge = async () => {
     // 根据不同支付方式处理跳转
     switch (selectedPaymentMethod.value.id) {
       case 'alipay':
-        // 在新窗口打开支付宝
-        const alipayWindow = window.open(response.payment_url, '_blank')
-        // 可以添加轮询检查支付状态
-        if (alipayWindow) {
-          pollPaymentStatus(response.order_id)
-        }
+        window.location.href = response.payment_url
         break
 
       case 'wechat':
@@ -243,10 +196,7 @@ const handleRecharge = async () => {
       case 'airwallex':
       case 'creem':
         // PayPal、Stripe和Airwallex使用重定向方式
-        // 将回调URL添加state参数，用于标识支付来源
-        const returnUrl = new URL(response.payment_url)
-        returnUrl.searchParams.append('state', 'recharge')
-        window.location.href = returnUrl.toString()
+        window.location.href = response.payment_url
         break
     }
   } catch (err) {

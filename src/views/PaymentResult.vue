@@ -18,21 +18,21 @@
           <div class="mb-6">
             <div :class="[
               'mx-auto w-16 h-16 rounded-full flex items-center justify-center',
-              success ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
+              pending ? 'bg-blue-100 dark:bg-blue-900/30' : success ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
             ]">
-              <Icon :icon="success ? 'ri:check-line' : 'ri:close-line'" :class="[
+              <Icon :icon="pending ? 'ri:time-line' : success ? 'ri:check-line' : 'ri:close-line'" :class="[
                 'w-8 h-8',
-                success ? 'text-green-500' : 'text-red-500'
+                pending ? 'text-blue-500' : success ? 'text-green-500' : 'text-red-500'
               ]" />
             </div>
           </div>
 
           <!-- Status Message -->
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {{ success ? 'Payment Successful' : 'Payment Failed' }}
+            {{ pending ? 'Payment Processing' : success ? 'Payment Successful' : 'Payment Failed' }}
           </h2>
           <p class="text-gray-600 dark:text-gray-300 mb-6">
-            {{ success ? 'Your credits have been successfully recharged' : 'There was an error processing your payment'
+            {{ pending ? 'Payment is not confirmed yet. Your credits will appear after the payment is verified.' : success ? 'Your credits have been successfully recharged' : 'There was an error processing your payment'
             }}
           </p>
         </template>
@@ -41,7 +41,7 @@
           <div class="bg-white/30 dark:bg-gray-700/30 rounded-lg p-4">
             <div class="flex justify-between items-center mb-2">
               <span class="text-gray-600 dark:text-gray-400">Payment Amount</span>
-              <span class="text-lg font-semibold text-gray-900 dark:text-white">¥{{ amount }}</span>
+              <span class="text-lg font-semibold text-gray-900 dark:text-white">{{ formatAmount(amount, currency) }}</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-600 dark:text-gray-400">Credits Received</span>
@@ -51,7 +51,7 @@
         </div>
 
         <!-- Error Message -->
-        <div v-if="!success && errorMessage" class="mb-8">
+        <div v-if="!success && !pending && errorMessage" class="mb-8">
           <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 text-red-600 dark:text-red-400">
             {{ errorMessage }}
           </div>
@@ -68,8 +68,11 @@
             </button>
           </template>
           <template v-else>
-            <button @click="retryPayment" class="flex-1 btn-primary">
-              Try Again
+            <button v-if="pending" @click="retryPayment" class="flex-1 btn-primary">
+              Check Again
+            </button>
+            <button @click="goToProfile" class="flex-1 btn-secondary">
+              View Credits
             </button>
             <button @click="goToHome" class="flex-1 btn-secondary">
               Back to Home
@@ -97,7 +100,9 @@ const paymentStore = usePaymentStore()
 const userStore = useUserStore()
 
 const loading = ref(true)
-const success = ref<boolean | null>(null)
+const success = ref(false)
+const pending = ref(false)
+const currency = ref<'CNY' | 'USD'>('USD')
 const amount = ref<number>()
 const credits = ref<number>()
 const errorMessage = ref<string>()
@@ -108,19 +113,27 @@ onMounted(async () => {
 
   if (status === 'success' && order_id) {
     try {
-      const result = await paymentStore.getPaymentStatus(order_id)
-      if (result) {
-        success.value = result.status === 'completed'
+      for (let attempt = 0; attempt < 30; attempt++) {
+        const result = await paymentStore.getPaymentStatus(order_id)
+        if (!result) throw new Error('Could not verify the payment. Check your payment history or try again.')
         amount.value = result.amount
+        currency.value = result.currency === 'CNY' ? 'CNY' : 'USD'
         credits.value = result.credits
-        // 更新用户积分
-        await userStore.fetchProfile()
-      } else {
-        throw new Error('Invalid payment data')
+        if (result.status === 'completed') {
+          success.value = true
+          await userStore.fetchProfile()
+          break
+        }
+        if (['failed', 'refunded'].includes(result.status)) {
+          errorMessage.value = `Payment ${result.status}. No credits were added.`
+          break
+        }
+        pending.value = true
+        if (attempt < 29) await new Promise(resolve => setTimeout(resolve, 2000))
       }
     } catch (error) {
-      success.value = false
       errorMessage.value = error instanceof Error ? error.message : 'Payment verification failed'
+      pending.value = false
     }
   } else {
     success.value = false
@@ -129,6 +142,9 @@ onMounted(async () => {
   // Set loading to false after payment status check
   loading.value = false
 })
+
+const formatAmount = (value?: number | string, code: 'CNY' | 'USD' = 'USD') =>
+  value !== undefined ? new Intl.NumberFormat(undefined, { style: 'currency', currency: code }).format(Number(value)) : ''
 
 const goToProfile = () => {
   router.push('/profile')
@@ -139,6 +155,6 @@ const goToHome = () => {
 }
 
 const retryPayment = () => {
-  router.go(-1) // 返回上一页重试支付
+  window.location.reload()
 }
 </script>

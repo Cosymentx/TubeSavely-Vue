@@ -19,20 +19,15 @@ const toastStore = useToastStore()
 const userStore = useUserStore()
 
 onMounted(async () => {
-  // 初始化用户认证状态
   const token = localStorage.getItem('token')
   if (token) {
-    try {
-      const profileLoaded = await userStore.fetchProfile()
-      if (!profileLoaded) {
-        userStore.logout(false)
-      }
-    } catch (error) {
-      // 如果获取用户信息失败，清除无效的token
-      localStorage.removeItem('token')
-      userStore.logout(false)
-    }
+    const profileLoaded = await userStore.fetchProfile()
+    if (profileLoaded) return
   }
+
+  // The refresh token is HttpOnly, so the browser can restore a session
+  // without exposing the long-lived credential to JavaScript.
+  await userStore.restoreSession()
 })
 </script>
 

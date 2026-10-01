@@ -2,6 +2,12 @@
   "name": "tubesavely-vue",
   "private": true,
   "version": "1.0.0",
+  "description": "TubeSavely Web Frontend - Modern web client built with Vue 3, Vite, and Tailwind CSS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cosymentx/tubesavely-vue.git"
+  },
+  "homepage": "https://github.com/Cosymentx/tubesavely-vue#readme",
   "packageManager": "pnpm@12.8.1",
   "type": "module",
   "scripts": {

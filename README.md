@@ -4,13 +4,24 @@ TubeSavely 的 Vue 3 前端。它提供视频链接解析、格式选择与下�
 
 > 请仅下载您拥有权利、获得授权或属于公共领域的内容，并遵守内容平台的服务条款和当地法律。
 
+## 项目生态 (Ecosystem)
+
+TubeSavely 由三个子项目协同构成完整的跨平台音视频提取与下载解决方案：
+
+| 项目 | 技术栈 | 职责与定位 | 仓库地址 |
+| :--- | :--- | :--- | :--- |
+| **[TubeSavely Web](https://github.com/Cosymentx/tubesavely-vue)** (本仓库) | Vue 3 + TypeScript + Vite + Tailwind CSS | 现代化响应式 Web 客户端，浏览器即开即用 | [![GitHub](https://img.shields.io/badge/GitHub-tubesavely--vue-blue?logo=github)](https://github.com/Cosymentx/tubesavely-vue) |
+| **[TubeSavely App](https://github.com/Cosymentx/TubeSavely)** | Flutter + Dart | 移动端（iOS / Android）及桌面客户端，提供原生交互体验 | [![GitHub](https://img.shields.io/badge/GitHub-TubeSavely--Flutter-02569B?logo=flutter)](https://github.com/Cosymentx/TubeSavely) |
+| **[TubeSavely Server](https://github.com/Cosymentx/TubeSavely-Server)** | Python + FastAPI | 核心音视频解析引擎、鉴权、积分计费与下载分发 API 服务 | [![GitHub](https://img.shields.io/badge/GitHub-TubeSavely--Server-3776AB?logo=python)](https://github.com/Cosymentx/TubeSavely-Server) |
+
 ## 技术栈
 
 - Vue 3 + TypeScript
-- Vite 6
-- Vue Router 4
-- Pinia
-- Tailwind CSS
+- Vite 8
+- Vue Router 5
+- Pinia 4
+- Tailwind CSS 4 (`@tailwindcss/vite`)
+- Vitest
 - Axios
 - Headless UI 与 Iconify
 

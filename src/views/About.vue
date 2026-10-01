@@ -76,6 +76,66 @@
             </div>
           </section>
 
+          <!-- 多端生态体系 -->
+          <section class="mt-12">
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">TubeSavely Ecosystem</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
+              TubeSavely is designed with a modern modular architecture, providing seamless cross-platform experiences across web, mobile, and backend services:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <a href="https://github.com/Cosymentx/tubesavely-vue" target="_blank" rel="noopener noreferrer"
+                 class="group p-5 rounded-xl bg-white/30 dark:bg-gray-700/30 border border-white/10 dark:border-gray-600/10 hover:border-[#f32b2b]/40 transition-all hover:shadow-lg flex flex-col justify-between">
+                <div>
+                  <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center mb-3 text-[#f32b2b] group-hover:scale-110 transition-transform">
+                    <Icon icon="ri:global-line" class="w-5 h-5" />
+                  </div>
+                  <div class="flex items-center gap-1.5 font-semibold text-gray-800 dark:text-white mb-1">
+                    <span>TubeSavely Web</span>
+                    <Icon icon="ri:external-link-line" class="w-3.5 h-3.5 text-gray-400 group-hover:text-[#f32b2b] transition-colors" />
+                  </div>
+                  <span class="inline-block text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-2 font-medium">Vue 3 + Vite</span>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Current Web client. Instant browser access with responsive interface and smooth downloading.
+                  </p>
+                </div>
+              </a>
+
+              <a href="https://github.com/Cosymentx/TubeSavely" target="_blank" rel="noopener noreferrer"
+                 class="group p-5 rounded-xl bg-white/30 dark:bg-gray-700/30 border border-white/10 dark:border-gray-600/10 hover:border-[#f32b2b]/40 transition-all hover:shadow-lg flex flex-col justify-between">
+                <div>
+                  <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center mb-3 text-[#f32b2b] group-hover:scale-110 transition-transform">
+                    <Icon icon="ri:smartphone-line" class="w-5 h-5" />
+                  </div>
+                  <div class="flex items-center gap-1.5 font-semibold text-gray-800 dark:text-white mb-1">
+                    <span>TubeSavely App</span>
+                    <Icon icon="ri:external-link-line" class="w-3.5 h-3.5 text-gray-400 group-hover:text-[#f32b2b] transition-colors" />
+                  </div>
+                  <span class="inline-block text-xs px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 mb-2 font-medium">Flutter + Dart</span>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Cross-platform mobile and desktop application providing native UX, offline management, and background tasks.
+                  </p>
+                </div>
+              </a>
+
+              <a href="https://github.com/Cosymentx/TubeSavely-Server" target="_blank" rel="noopener noreferrer"
+                 class="group p-5 rounded-xl bg-white/30 dark:bg-gray-700/30 border border-white/10 dark:border-gray-600/10 hover:border-[#f32b2b]/40 transition-all hover:shadow-lg flex flex-col justify-between">
+                <div>
+                  <div class="w-10 h-10 rounded-lg bg-[#f32b2b]/10 flex items-center justify-center mb-3 text-[#f32b2b] group-hover:scale-110 transition-transform">
+                    <Icon icon="ri:server-line" class="w-5 h-5" />
+                  </div>
+                  <div class="flex items-center gap-1.5 font-semibold text-gray-800 dark:text-white mb-1">
+                    <span>TubeSavely Server</span>
+                    <Icon icon="ri:external-link-line" class="w-3.5 h-3.5 text-gray-400 group-hover:text-[#f32b2b] transition-colors" />
+                  </div>
+                  <span class="inline-block text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-2 font-medium">Python + FastAPI</span>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Core backend service handling multi-platform video parsing, extraction, authentication, and API endpoints.
+                  </p>
+                </div>
+              </a>
+            </div>
+          </section>
+
           <!-- 使用指南 -->
           <section class="mt-12">
             <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">How It Works</h2>

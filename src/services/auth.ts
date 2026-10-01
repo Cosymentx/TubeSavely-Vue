@@ -20,7 +20,12 @@ export const createAuthService = (api: AxiosInstance) => ({
     return api.post('/auth/register', registerData)
   },
 
+  refresh: (): ApiResult<AuthResponse> => {
+    return api.post('/auth/refresh')
+  },
+
   logout: () => {
+    void api.post('/auth/logout').catch(() => undefined)
     // 清除所有认证相关的存储项
     localStorage.removeItem('token')
     localStorage.removeItem('userState')

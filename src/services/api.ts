@@ -9,7 +9,7 @@ const createApi = (toastStore: ToastStore) => {
   const api = axios.create({
     baseURL: API_BASE_URL,
     timeout: 30000,
-    withCredentials: true,
+    withCredentials: false,
     maxRedirects: 0,
     headers: {
       'Content-Type': 'application/json'

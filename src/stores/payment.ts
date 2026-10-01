@@ -106,6 +106,10 @@ export const usePaymentStore = defineStore('payment', () => {
     paymentHistory,
     error,
     getCreditsAmount,
+    getPaymentMethods: async () => {
+      const response = await paymentService.getPaymentMethods()
+      return response.data.data
+    },
     createPayment,
     getPaymentStatus,
     verifyPayment,

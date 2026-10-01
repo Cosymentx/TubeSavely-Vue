@@ -20,7 +20,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api/v1': {
-        target: 'http://127.0.0.1:9527',
+        target: 'https://tubesavely-server.vercel.app',
         changeOrigin: true,
         rewrite: (path) => path
       }

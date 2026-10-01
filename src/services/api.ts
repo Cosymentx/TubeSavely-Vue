@@ -3,7 +3,7 @@ import { createInterceptors } from './interceptors'
 import type { ToastStore } from '../stores/toast'
 import { createFeedbackService } from './feedback'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:9527/api/v1'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://tubesavely-server.vercel.app/api/v1'
 
 const createApi = (toastStore: ToastStore) => {
   const api = axios.create({

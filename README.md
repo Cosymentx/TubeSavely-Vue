@@ -87,7 +87,7 @@ pnpm dev
 
 | 环境变量 | 必填 | 默认值 | 说明 |
 | :--- | :---: | :--- | :--- |
-| `VITE_API_BASE_URL` | 否 | `http://localhost:9527/api/v1` | 后端 API 服务根路径 |
+| `VITE_API_BASE_URL` | 否 | `https://tubesavely-server.vercel.app/api/v1` | 后端 API 服务根路径 |
 
 > 注意：所有以 `VITE_*` 开头的变量都会打包进前端静态资源中，切勿在此填写任何数据库连接串、支付密钥或私钥敏感凭据。
 

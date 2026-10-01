@@ -5,7 +5,8 @@ export type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed'
 export interface PaymentMethod {
   id: PaymentMethodType
   name: string
-  icon: string
+  icon?: string
+  currencies?: Array<'CNY' | 'USD'>
 }
 
 // 信用点数价格配置

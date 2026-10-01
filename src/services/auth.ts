@@ -4,7 +4,9 @@ import type { AxiosInstance } from 'axios'
 
 // 生成随机 state 用于防止 CSRF 攻击
 function generateState(): string {
-  return Math.random().toString(36).substring(2, 15)
+  const bytes = new Uint8Array(32)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('')
 }
 
 export const createAuthService = (api: AxiosInstance) => ({

@@ -23,11 +23,14 @@ onMounted(async () => {
   const token = localStorage.getItem('token')
   if (token) {
     try {
-      await userStore.fetchProfile()  // 获取用户信息
+      const profileLoaded = await userStore.fetchProfile()
+      if (!profileLoaded) {
+        userStore.logout(false)
+      }
     } catch (error) {
       // 如果获取用户信息失败，清除无效的token
       localStorage.removeItem('token')
-      userStore.logout()  // 使用 logout 方法代替 setUser
+      userStore.logout(false)
     }
   }
 })
@@ -35,4 +38,4 @@ onMounted(async () => {
 
 <style>
 @import './assets/main.css';
-</style> 
+</style>

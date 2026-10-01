@@ -55,7 +55,12 @@ export const useUserStore = defineStore('user', () => {
     const savedUser = localStorage.getItem('userState')
     const savedToken = localStorage.getItem('token')
     if (savedUser && savedToken) {
-      localUser.value = JSON.parse(savedUser)
+      try {
+        localUser.value = JSON.parse(savedUser)
+      } catch {
+        localStorage.removeItem('userState')
+        localStorage.removeItem('token')
+      }
     }
   }
 
@@ -130,10 +135,12 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const logout = () => {
+  const logout = (notify = true) => {
     authService.logout()
     setUser(null)
-    toastStore.showToast('Logged out successfully', 'success')
+    if (notify) {
+      toastStore.showToast('Logged out successfully', 'success')
+    }
   }
 
   const socialLogin = async (provider: 'google' | 'github' | 'facebook' | 'wechat') => {
@@ -197,6 +204,10 @@ export const useUserStore = defineStore('user', () => {
       }
     } catch (err) {
       const message = getErrorMessage(err)
+      if ((err as { response?: { status?: number } }).response?.status === 401) {
+        authService.logout()
+        setUser(null)
+      }
       toastStore.showToast(message, 'error')
       return false
     } finally {
@@ -208,7 +219,11 @@ export const useUserStore = defineStore('user', () => {
     try {
       isLoading.value = true
       const response = await userService.updateProfile(form)
-      setUser(response.data as any)
+      if (response.data.code !== 200 || !response.data.data) {
+        toastStore.showToast(response.data.msg || 'Failed to update profile', 'error')
+        return false
+      }
+      setUser(response.data.data)
       toastStore.showToast('Profile updated successfully', 'success')
       return true
     } catch (err) {
@@ -224,7 +239,11 @@ export const useUserStore = defineStore('user', () => {
     try {
       isLoading.value = true
       const response = await userService.updateAvatar(file)
-      setUser(response.data as any)
+      if (response.data.code !== 200) {
+        toastStore.showToast(response.data.msg || 'Failed to update avatar', 'error')
+        return false
+      }
+      await fetchProfile()
       toastStore.showToast('Avatar updated successfully', 'success')
       return true
     } catch (err) {

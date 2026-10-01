@@ -12,8 +12,7 @@ const createApi = (toastStore: ToastStore) => {
     withCredentials: true,
     maxRedirects: 0,
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Content-Type': 'application/json'
     }
   })
 

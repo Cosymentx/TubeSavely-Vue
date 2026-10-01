@@ -43,6 +43,7 @@ export const createInterceptors = (api: AxiosInstance, toastStore: ToastStore) =
         // Handle 401 unauthorized error
         if (error.response.status === 401) {
           localStorage.removeItem('token')
+          localStorage.removeItem('userState')
           errorMessage = error.response.data?.detail || error.response.data?.message || 'Session expired, please login again'
         } else {
           errorMessage = error.response.data?.detail || error.response.data?.message || 'Server error'

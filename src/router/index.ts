@@ -1,15 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import Home from '../views/Home.vue'
-import About from '../views/About.vue'
-import Contact from '../views/Contact.vue'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
-import Terms from '../views/Terms.vue'
-import Profile from '../views/Profile.vue'
-import Settings from '../views/Settings.vue'
-import Platforms from '../views/Platforms.vue'
-import CreditsHistory from '../views/CreditsHistory.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,51 +14,51 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      component: About
+      component: () => import('../views/About.vue')
     },
     {
       path: '/contact',
       name: 'contact',
-      component: Contact
+      component: () => import('../views/Contact.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: Login,
+      component: () => import('../views/Login.vue'),
       meta: { guest: true }
     },
     {
       path: '/register',
       name: 'register',
-      component: Register,
+      component: () => import('../views/Register.vue'),
       meta: { guest: true }
     },
     {
       path: '/terms',
       name: 'terms',
-      component: Terms
+      component: () => import('../views/Terms.vue')
     },
     {
       path: '/platforms',
       name: 'platforms',
-      component: Platforms
+      component: () => import('../views/Platforms.vue')
     },
     {
       path: '/profile',
       name: 'profile',
-      component: Profile,
+      component: () => import('../views/Profile.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/settings',
       name: 'settings',
-      component: Settings,
+      component: () => import('../views/Settings.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/credits-history',
       name: 'credits-history',
-      component: CreditsHistory,
+      component: () => import('../views/CreditsHistory.vue'),
       meta: { requiresAuth: true }
     },
     {
@@ -96,8 +87,16 @@ const router = createRouter({
           query: { code, state, error, oauth_provider: provider }
         }
       }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFound.vue')
     }
-  ]
+  ],
+  scrollBehavior(_, __, savedPosition) {
+    return savedPosition || { top: 0 }
+  }
 })
 
 // 修复路由守卫逻辑

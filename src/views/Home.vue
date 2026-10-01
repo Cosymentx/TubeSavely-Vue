@@ -214,11 +214,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useVideoStore } from '../stores/video'
 import { useUserStore } from '../stores/user'
-import { useToastStore } from '../stores/toast'
 import type { VideoFormat } from '../types/video'
 import {isValidUrl, extractDouyinUrl } from '../utils/url'
 import Logo from '../components/logo.vue'
@@ -229,7 +228,6 @@ import Footer from '../components/layout/Footer.vue'
 
 const videoStore = useVideoStore()
 const userStore = useUserStore()
-const toastStore = useToastStore()
 
 // 添加格式化时长的函数
 const formatDuration = (duration: string) => {
@@ -304,26 +302,6 @@ const selectFormat = (format: VideoFormat) => {
   selectedFormat.value = format
 }
 
-// 根据用户偏好设置选择默认格式
-const selectDefaultFormat = () => {
-  if (!filteredFormats.value.length) return
-
-  // const { defaultQuality } = userStore.preferences
-
-  // 根据用户偏好的质量选择格式
-  let selectedFormat = filteredFormats.value[0] // 默认选择第一个
-
-  // if (defaultQuality !== 'best') {
-  //   // 查找最接近用户偏好质量的格式
-  //   const targetHeight = parseInt(defaultQuality)
-  //   selectedFormat = filteredFormats.value.find(format => 
-  //     format.height === targetHeight
-  //   ) || filteredFormats.value[0]
-  // }
-
-  selectFormat(selectedFormat)
-}
-
 // 修改 handleParse 方法
 const handleParse = async () => {
   if (videoStore.videoUrl) {
@@ -362,7 +340,6 @@ const formatMenuRef = ref<HTMLElement | null>(null)
 const isFormatMenuOpen = ref(false)
 
 const selectedOption = computed(() => {
-  selectDefaultFormat()
   return formatOptions.find(option => option.id === videoStore.format) || formatOptions[0]
 })
 
@@ -404,7 +381,7 @@ const filteredFormats = computed(() => {
           !format.url.includes('.m3u8')
       } else if (videoStore.format === 'audio') {
         // 音频模式：选择只有音频的格式
-        return format.acodec !== 'none' && format.vcodec === 'none'
+        return format.acodec !== 'none' && format.vcodec === 'none' && !!format.url
       } else if (videoStore.format === 'mute') {
         // 无声视频模式：选择只有视频没有音频的格式
         return format.vcodec !== 'none' && format.acodec === 'none' &&
@@ -424,39 +401,16 @@ const filteredFormats = computed(() => {
       }
     })
 })
+
+watch(filteredFormats, formats => {
+  if (!formats.some(format => format.format_id === selectedFormat.value?.format_id)) {
+    selectedFormat.value = formats[0] || null
+  }
+}, { immediate: true })
+
 const handleDownload = async () => {
-  if (!userStore.isLoggedIn) {
-    toastStore.showToast('Please login to download', 'error')
-    return
-  }
-
-  if (userStore.getCredits() < 3) {
-    toastStore.showToast('Insufficient credits. You need 3 credits to download.', 'error')
-    return
-  }
-
   if (!selectedFormat.value || !videoStore.videoInfo) return
-
-  try {
-    // 根据用户偏好设置处理下载
-    const { autoConvert, notifications } = userStore.preferences
-
-    // 如果启用了自动转换且格式不是 MP4
-    if (autoConvert && selectedFormat.value.ext !== 'mp4') {
-      toastStore.showToast('Converting to MP4...', 'info')
-      // TODO: 实现格式转换逻辑
-    }
-
-    // 开始下载
-    window.open(selectedFormat.value.url, '_blank')
-
-    // 如果启用了通知
-    if (notifications) {
-      toastStore.showToast('Download started!', 'success')
-    }
-  } catch (error) {
-    toastStore.showToast('Failed to start download', 'error')
-  }
+  await videoStore.downloadVideo(selectedFormat.value)
 }
 </script>
 

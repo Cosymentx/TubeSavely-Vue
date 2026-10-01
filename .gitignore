@@ -31,3 +31,6 @@ client_secret*.json
 
 # Local database/editor session files
 *.session.sql
+.vercel/
+.env*
+!.env.example

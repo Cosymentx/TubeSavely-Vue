@@ -6,6 +6,7 @@ import { useToastStore } from './toast'
 import type { VideoFormat, VideoCreate, VideoStatus } from '../types/video'
 import { getErrorMessage } from '../utils/error'
 import { useUserStore } from './user'
+import { normalizeFormats } from '../utils/video'
 
 export const useVideoStore = defineStore('video', () => {
   const userStore = useUserStore()
@@ -57,30 +58,20 @@ export const useVideoStore = defineStore('video', () => {
       }
       isLoading.value = true
       error.value = ''
+      videoInfo.value = null
+      availableFormats.value = []
       const response = await videoService.parse(url)
       if (response.data.code === 200) {
         videoInfo.value = response.data.data
         // 处理formats信息
         if (response.data.data?.formats) {
-          availableFormats.value = response.data.data.formats.map((format: any) => ({
-            id: format.format_id,
-            format_id: format.format_id,
-            quality: format.quality,
-            label: `${format.height || ''}p ${format.ext}`,
-            filesize: format.filesize || 0,
-            url: format.url,
-            ext: format.ext,
-            vcodec: format.vcodec,
-            acodec: format.acodec
-          })).filter((format: any) =>
-            format.vcodec !== 'none' &&
-            format.acodec !== 'none' &&
-            format.height
-          ).sort((a: any, b: any) => parseInt(b.label) - parseInt(a.label))
+          availableFormats.value = normalizeFormats(response.data.data.formats)
+          videoInfo.value = { ...response.data.data, formats: availableFormats.value }
 
           userStore.fetchProfile()
         }
       } else {
+        error.value = response.data.msg || 'Unable to parse this video'
         toastStore.showToast(response.data.msg, 'error')
       }
     } catch (err) {
@@ -116,20 +107,14 @@ export const useVideoStore = defineStore('video', () => {
       return
     }
 
-    if (userStore.getCredits() < 3) {
-      toastStore.showToast('Insufficient credits. You need 3 credits to download.', 'error')
-      return
-    }
-
-    if (!videoUrl.value || !selectedFormat.url) return
+    if (!videoInfo.value?.url || !selectedFormat.url) return
 
     try {
       downloadStatus.value = 'downloading'
       downloadProgress.value = 0
 
-      // The download endpoint is the sole source of truth for authorization,
-      // credit deduction, and file delivery.
-      const blob = await videoService.download(videoUrl.value, {
+      // Credits are charged once on successful parsing. Download uses that result.
+      const blob = await videoService.download(videoInfo.value.url, {
         format_id: selectedFormat.format_id,
         quality: selectedFormat.quality
       }, progress => {

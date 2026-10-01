@@ -131,3 +131,11 @@ src/
 ## 📄 开源协议
 
 Copyright © 2023-2026 TubeSavely. All rights reserved.
+
+### 视频格式与下载
+
+格式选项会合并同一清晰度、码率和编码的备用地址，默认显示 4 个，可以通过 Show all / Show fewer 展开和收起。未知分辨率显示 Original，TikTok 没有发布文案的作品使用作者标题。
+
+下载调用 Python 后端的鉴权流式接口，使用解析结果中的原始链接与格式 ID。成功解析扣除积分后，下载不会重复扣分；接口返回的 JSON 或 HTML 错误不会保存为视频文件。
+
+本地验证：`pnpm run typecheck`、`pnpm run test`、`pnpm run build`。

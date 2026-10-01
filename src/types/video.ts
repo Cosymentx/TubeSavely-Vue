@@ -16,6 +16,7 @@ export interface VideoFormat extends VideoFormatBase {
   vcodec?: string
   acodec?: string
   tbr?: number
+  fps?: number
 }
 
 export interface VideoBase {
@@ -73,4 +74,4 @@ export interface VideoDownloadOptions {
   quality?: string
   output_dir?: string
   filename?: string
-} 
+}

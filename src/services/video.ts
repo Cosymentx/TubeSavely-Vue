@@ -2,10 +2,11 @@ import type {VideoCreate, VideoFormat, VideoDownloadOptions, Video } from '../ty
 import type { ApiResult } from '@/types/api'
 import type { Paging } from '@/types/paging'
 import type { AxiosInstance } from 'axios'
+import { requireMediaBlob } from '../utils/video'
 
 export const createVideoService = (api: AxiosInstance) => ({
   parse: (url: string): ApiResult<VideoCreate> => {
-    return api.get(`/videos/parse?url=${encodeURIComponent(url)}`)
+    return api.get(`/videos/parse?url=${encodeURIComponent(url)}`, { timeout: 120000 })
   },
   getInfo: (url: string): ApiResult<VideoCreate> => {
     return api.post('/videos/info', { url })
@@ -34,6 +35,7 @@ export const createVideoService = (api: AxiosInstance) => ({
       { url, ...options },
       {
         responseType: 'blob',
+        timeout: 300000,
         onDownloadProgress: (progressEvent) => {
           if (progressEvent.total && onProgress) {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -41,6 +43,11 @@ export const createVideoService = (api: AxiosInstance) => ({
           }
         }
       }
-    ).then(response => response.data)
+    ).then(response => requireMediaBlob(response.data)).catch(async error => {
+      if (error.response?.data instanceof Blob) {
+        await requireMediaBlob(error.response.data)
+      }
+      throw error
+    })
   }
 })

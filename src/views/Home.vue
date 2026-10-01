@@ -115,8 +115,8 @@
                     <Icon icon="ri:video-line" class="w-4 h-4 text-[#f32b2b]" />
                     <p class="text-sm text-gray-600 dark:text-gray-300">Available in multiple formats</p>
                   </div>
-                  <div class="mt-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                    {{ videoStore.videoInfo.description || 'Experience seamless video downloading with our service.Choose from various quality options to suit your needs.' }}
+                  <div v-if="videoStore.videoInfo.description" class="mt-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                    {{ videoStore.videoInfo.description }}
                   </div>
                   <div class="flex items-center gap-4 mt-3">
                     <div class="flex items-center gap-2">
@@ -139,8 +139,8 @@
                   <Icon icon="ri:download-cloud-line" class="w-4 h-4 text-[#f32b2b]" />
                   <p class="text-sm font-medium text-gray-700 dark:text-gray-200">Available Formats:</p>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                  <button v-for="format in filteredFormats" :key="format.format_id" @click="selectFormat(format)"
+                <div id="video-format-options" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button v-for="format in visibleFormats" :key="format.format_id" @click="selectFormat(format)"
                     :class="[
                   'px-4 py-3 rounded-lg text-sm font-medium transition-colors shadow-sm w-full',
                   selectedFormat?.format_id === format.format_id
@@ -149,17 +149,24 @@
                 ]">
                     <div class="flex flex-col items-start gap-1">
                       <div class="flex items-center justify-between w-full">
-                        <span class="font-semibold">{{ format.format_note || `${format.height || 720}p` }}</span>
+                        <span class="font-semibold">{{ format.label || format.format_note || 'Original' }}</span>
                         <span class="text-xs opacity-75">{{ format.ext.toUpperCase() }}</span>
                       </div>
                       <div class="flex flex-col text-xs opacity-75 text-left">
-                        <span>Resolution: {{ format.width }}x{{ format.height }}</span>
-                        <span>Codec: {{ format.vcodec !== 'none' ? format.vcodec : format.acodec }}</span>
+                        <span v-if="format.width && format.height">Resolution: {{ format.width }}x{{ format.height }}</span>
+                        <span v-if="format.vcodec || format.acodec">Codec: {{ format.vcodec !== 'none' ? format.vcodec : format.acodec }}</span>
                         <span v-if="format.filesize">Size: {{ (format.filesize / 1024 / 1024).toFixed(1) }} MB</span>
+                        <span v-if="format.tbr">Bitrate: {{ (format.tbr / 1000).toFixed(1) }} Mbps</span>
                       </div>
                     </div>
                   </button>
                 </div>
+                <button v-if="filteredFormats.length > 4" type="button"
+                  :aria-expanded="showAllFormats" aria-controls="video-format-options"
+                  class="text-sm font-medium text-[#f32b2b] hover:underline"
+                  @click="showAllFormats = !showAllFormats">
+                  {{ showAllFormats ? 'Show fewer' : `Show all ${filteredFormats.length} formats` }}
+                </button>
               </div>
             </div>
           </div>
@@ -300,6 +307,7 @@ const handlePaste = async () => {
 }
 
 const selectedFormat = ref<VideoFormat | null>(null)
+const showAllFormats = ref(false)
 
 const selectFormat = (format: VideoFormat) => {
   selectedFormat.value = format
@@ -404,6 +412,10 @@ const filteredFormats = computed(() => {
       }
     })
 })
+
+const visibleFormats = computed(() => showAllFormats.value ? filteredFormats.value : filteredFormats.value.slice(0, 4))
+
+watch([() => videoStore.videoInfo, () => videoStore.format], () => { showAllFormats.value = false })
 
 watch(filteredFormats, formats => {
   if (!formats.some(format => format.format_id === selectedFormat.value?.format_id)) {

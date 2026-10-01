@@ -28,3 +28,6 @@ dist-ssr
 .env.*
 !.env.example
 client_secret*.json
+
+# Local database/editor session files
+*.session.sql

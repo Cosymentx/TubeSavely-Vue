@@ -1,5 +1,5 @@
 <template>
-  <div class="relative min-h-screen overflow-hidden">
+  <div class="relative min-h-screen overflow-x-clip">
     <!-- 背景效果 -->
     <BackgroundEffect />
 
@@ -188,23 +188,26 @@
       <!-- Loading State -->
       <!-- <Loading v-if="videoStore.isLoading" /> -->
     </div>
-    <Transition appear enter-active-class="transition-all duration-1000 ease-in-out"
-      enter-from-class="transform -translate-y-16 opacity-0" enter-to-class="transform translate-y-0 opacity-100"
-      leave-active-class="transition-all duration-300 ease-in" leave-from-class="transform translate-y-0 opacity-100"
-      leave-to-class="transform -translate-y-16 opacity-0">
+    <Transition appear enter-active-class="transition-all duration-700 ease-out"
+      enter-from-class="-translate-y-8 opacity-0" enter-to-class="translate-y-0 opacity-100"
+      leave-active-class="transition-all duration-300 ease-in" leave-from-class="translate-y-0 opacity-100"
+      leave-to-class="-translate-y-8 opacity-0">
       <div v-if="!userStore.isLoggedIn"
-        class="fixed top-16 sm:top-[4.5rem] left-1/2 transform -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl rounded-full border border-white/20 dark:border-white/10 shadow-lg text-gray-700 dark:text-white text-sm sm:text-base animate-float whitespace-nowrap">
+        class="fixed top-16 sm:top-[4.5rem] left-0 right-0 z-20 flex justify-center pointer-events-none px-4">
         <div
-          class="absolute inset-0 rounded-full bg-gradient-to-r from-[#f32b2b]/10 to-[#ff4b4b]/10 dark:from-[#f32b2b]/20 dark:to-[#ff4b4b]/20 blur">
-        </div>
-        <div class="relative flex items-center gap-2 flex-nowrap">
-          <Icon icon="ri:shield-star-line" class="w-4 h-4 sm:w-5 sm:h-5 text-[#f32b2b] shrink-0" />
-          <span class="font-medium">Get <span class="text-[#f32b2b] mr-1">unlimited</span>access</span>
-          <div class="flex items-center border-l border-gray-300/50 dark:border-white/20 shrink-0 ml-2">
-            <router-link to="/register"
-              class="px-2.5 py-0.5 text-[#f32b2b] hover:bg-[#f32b2b]/10 rounded-lg transition-colors font-medium ml-2">
-              Sign up
-            </router-link>
+          class="pointer-events-auto animate-float relative flex items-center gap-1.5 px-3 py-1.5 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl rounded-full border border-white/20 dark:border-white/10 shadow-lg text-gray-700 dark:text-white text-sm sm:text-base whitespace-nowrap">
+          <div
+            class="absolute inset-0 rounded-full bg-gradient-to-r from-[#f32b2b]/10 to-[#ff4b4b]/10 dark:from-[#f32b2b]/20 dark:to-[#ff4b4b]/20 blur">
+          </div>
+          <div class="relative flex items-center gap-2 flex-nowrap">
+            <Icon icon="ri:shield-star-line" class="w-4 h-4 sm:w-5 sm:h-5 text-[#f32b2b] shrink-0" />
+            <span class="font-medium">Get <span class="text-[#f32b2b] mr-1">unlimited</span>access</span>
+            <div class="flex items-center border-l border-gray-300/50 dark:border-white/20 shrink-0 ml-2">
+              <router-link to="/register"
+                class="px-2.5 py-0.5 text-[#f32b2b] hover:bg-[#f32b2b]/10 rounded-lg transition-colors font-medium ml-2">
+                Sign up
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -432,29 +435,28 @@ const handleDownload = async () => {
 }
 
 @keyframes float {
-
   0%,
   100% {
-    transform: translate(-50%, 0);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translate(-50%, -2px);
+    transform: translateY(-4px);
   }
 }
 
 .animate-float {
   animation: float 2s ease-in-out infinite;
-  animation-delay: 1s;
 }
 
 .backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .form-container {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform: translateZ(0);
 }
 </style>

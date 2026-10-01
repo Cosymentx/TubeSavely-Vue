@@ -1,17 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   body {
-    @apply bg-white dark:bg-gray-900 text-gray-800 dark:text-white transition-colors duration-300;
+    @apply bg-white dark:bg-gray-900 text-gray-800 dark:text-white;
   }
 }
 
 @layer utilities {
   .backdrop-blur-xl {
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 }
 
@@ -46,5 +46,6 @@
 
   .form-container {
     @apply bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl p-8 border border-white dark:border-gray-700 shadow-lg;
+    transform: translateZ(0);
   }
 }

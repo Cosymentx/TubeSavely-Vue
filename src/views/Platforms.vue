@@ -1,5 +1,5 @@
 <template>
-  <div class="relative min-h-screen overflow-hidden">
+  <div class="relative min-h-screen overflow-x-clip">
     <BackgroundEffect />
     
     <div class="relative flex flex-col items-center min-h-screen max-w-4xl mx-auto px-4 py-16">

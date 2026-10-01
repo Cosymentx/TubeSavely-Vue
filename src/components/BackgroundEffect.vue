@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+  <div class="fixed inset-0 overflow-hidden pointer-events-none bg-effect-container">
     <!-- 背景渐变 -->
     <div class="absolute inset-0 bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 opacity-60"></div>
 
@@ -19,6 +19,11 @@
 </script>
 
 <style scoped>
+.bg-effect-container {
+  contain: strict;
+  transform: translateZ(0);
+}
+
 @keyframes blob {
   0% {
     transform: rotate(0deg) scale(1);
@@ -33,5 +38,7 @@
 
 .animate-blob {
   animation: blob 90s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 </style>

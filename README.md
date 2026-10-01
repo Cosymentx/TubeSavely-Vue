@@ -4,6 +4,18 @@ TubeSavely 的 Vue 3 前端。它提供视频链接解析、格式选择与下�
 
 > 请仅下载您拥有权利、获得授权或属于公共领域的内容，并遵守内容平台的服务条款和当地法律。
 
+## TubeSavely 系列项目
+
+TubeSavely 系列由三个仓库组成，分别维护 Flutter 客户端、Vue Web 客户端和 Python API 服务。
+
+| 项目 | 技术栈 | 用途 |
+| --- | --- | --- |
+| [TubeSavely](https://github.com/Cosymentx/TubeSavely) | Flutter / Dart | 移动端与桌面端客户端 |
+| [TubeSavely-Vue](https://github.com/Cosymentx/TubeSavely-Vue) | Vue 3 / TypeScript | Web 客户端 |
+| [TubeSavely-Server](https://github.com/Cosymentx/TubeSavely-Server) | Python / FastAPI | 用户、视频、积分和支付 API |
+
+[访问 Web 客户端](https://tube-savely-vue.vercel.app) · [查看 API 文档](https://tube-savely-server.vercel.app/docs)
+
 ## 技术栈
 
 - Vue 3 + TypeScript

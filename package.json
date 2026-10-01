@@ -27,5 +27,14 @@
     "typescript": "^5.8.2",
     "vite": "6.0.9",
     "vue-tsc": "^2.2.6"
+  },
+  "description": "TubeSavely Vue web client; companion projects provide the Flutter app and Python API.",
+  "homepage": "https://tube-savely-vue.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cosymentx/TubeSavely-Vue.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Cosymentx/TubeSavely-Vue/issues"
   }
 }

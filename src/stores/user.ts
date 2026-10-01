@@ -79,6 +79,24 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  const restoreSession = async () => {
+    try {
+      const response = await authService.refresh()
+      const result = response.data
+      if (result.code === 200 && result.data) {
+        const { access_token, user: userData } = result.data
+        localStorage.setItem('token', access_token)
+        setUser(userData)
+        return true
+      }
+    } catch {
+      // Missing/expired refresh sessions are expected for signed-out users.
+    }
+    authService.logout()
+    setUser(null)
+    return false
+  }
+
   const login = async (loginData: UserLogin) => {
     try {
       isLoading.value = true
@@ -304,9 +322,7 @@ export const useUserStore = defineStore('user', () => {
     return localUser.value?.credits || 0
   }
 
-  const isLoggedIn = computed(() => {
-    return !!localUser.value && !!localStorage.getItem('token')
-  })
+  const isLoggedIn = computed(() => !!localUser.value)
 
   const getCreditHistory = async (offset: number = 0, limit: number = 10) => {
     try {
@@ -325,6 +341,7 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn,
     login,
     register,
+    restoreSession,
     logout,
     socialLogin,
     handleOAuthCallback,

@@ -66,9 +66,18 @@ pnpm typecheck
 # 生成生产构建
 pnpm build
 
+# CI 完整检查：冻结依赖安装、类型检查与生产构建
+sh scripts/ci-test.sh
+
 # 本地预览生产构建
 pnpm preview
+
+# CI：冻结安装、Vue 类型检查和生产构建
+sh scripts/ci-test.sh
 ```
+
+GitHub Actions 在 master 的 push 和 pull request 时运行 CI 脚本。Dependabot 每周检查 npm
+和 GitHub Actions 更新。
 
 ## 项目结构
 

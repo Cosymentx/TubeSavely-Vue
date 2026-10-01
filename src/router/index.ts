@@ -39,6 +39,16 @@ const router = createRouter({
       component: () => import('../views/Terms.vue')
     },
     {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../views/Privacy.vue')
+    },
+    {
+      path: '/data-deletion',
+      name: 'data-deletion',
+      component: () => import('../views/DataDeletion.vue')
+    },
+    {
       path: '/platforms',
       name: 'platforms',
       component: () => import('../views/Platforms.vue')

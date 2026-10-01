@@ -141,8 +141,10 @@
                 </div>
                 <div id="video-format-options" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button v-for="format in visibleFormats" :key="format.format_id" @click="selectFormat(format)"
+                    :disabled="isBusy"
                     :class="[
                   'px-4 py-3 rounded-lg text-sm font-medium transition-colors shadow-sm w-full',
+                  isBusy ? 'opacity-60 cursor-not-allowed' : '',
                   selectedFormat?.format_id === format.format_id
                     ? 'bg-[#f32b2b]/10 text-[#f32b2b] border-2 border-[#f32b2b] shadow-[#f32b2b]/10'
                     : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-[#f32b2b] hover:bg-[#f32b2b]/5'
@@ -171,13 +173,144 @@
             </div>
           </div>
 
-          <!-- Download Button -->
-          <button @click="handleDownload" :disabled="isDownloadDisabled"
-            class="w-full btn-primary py-3 relative overflow-hidden">
-            <span v-if="!videoStore.videoUrl">Enter Video URL</span>
-            <span v-else-if="!videoStore.videoInfo">Parse Video First</span>
-            <span v-else-if="!selectedFormat">Select Format</span>
-            <span v-else>Download {{ selectedFormat.label }}</span>
+          <!-- Real-time Download Progress Card -->
+          <Transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 -translate-y-2"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 -translate-y-2"
+          >
+            <div
+              v-if="isBusy"
+              class="mb-4 p-4 rounded-xl bg-white/70 dark:bg-gray-800/70 border border-[#f32b2b]/20 dark:border-[#f32b2b]/30 backdrop-blur-md shadow-sm space-y-2.5"
+            >
+              <div class="flex items-center justify-between text-xs sm:text-sm text-gray-700 dark:text-gray-200 font-medium">
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-4 border-2 border-[#f32b2b]/30 border-t-[#f32b2b] rounded-full animate-spin"></div>
+                  <span>{{ videoStore.downloadStatus === 'preparing' ? 'Preparing video stream...' : 'Downloading video...' }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span v-if="videoStore.downloadTotal > 0" class="text-xs opacity-75 font-mono">
+                    {{ formatBytes(videoStore.downloadLoaded) }} / {{ formatBytes(videoStore.downloadTotal) }}
+                  </span>
+                  <span v-else-if="videoStore.downloadLoaded > 0" class="text-xs opacity-75 font-mono">
+                    {{ formatBytes(videoStore.downloadLoaded) }} transferred
+                  </span>
+                  <span class="font-bold text-[#f32b2b] font-mono text-sm">
+                    {{ videoStore.downloadProgress }}%
+                  </span>
+                </div>
+              </div>
+
+              <!-- Track -->
+              <div class="w-full h-2.5 bg-gray-200 dark:bg-gray-700/80 rounded-full overflow-hidden relative shadow-inner">
+                <div
+                  class="h-full bg-gradient-to-r from-[#f32b2b] to-[#ff4b4b] rounded-full transition-all duration-200 ease-out relative"
+                  :style="{ width: `${videoStore.downloadProgress}%` }"
+                >
+                  <div class="absolute inset-0 bg-white/30 animate-pulse"></div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                <span>{{ selectedFormat?.format_note || `${selectedFormat?.height || 720}p` }} · {{ selectedFormat?.ext?.toUpperCase() }}</span>
+                <span>The file will be saved automatically once transfer finishes</span>
+              </div>
+            </div>
+          </Transition>
+
+          <!-- Download Action Button with Interactive States -->
+          <button
+            @click="handleButtonClick"
+            :disabled="isButtonDisabled"
+            class="w-full py-3.5 px-6 rounded-xl font-medium relative overflow-hidden transition-all duration-300 shadow-md flex items-center justify-center gap-2 select-none group"
+            :class="buttonThemeClass"
+          >
+            <!-- Progress Fill background inside Button -->
+            <div
+              v-if="isBusy"
+              class="absolute inset-0 bg-white/20 dark:bg-white/25 transition-all duration-200 ease-out pointer-events-none"
+              :style="{ width: `${videoStore.downloadProgress}%` }"
+            ></div>
+
+            <!-- Bottom Progress Line -->
+            <div
+              v-if="isBusy"
+              class="absolute bottom-0 left-0 right-0 h-1 bg-black/10 dark:bg-black/20 pointer-events-none"
+            >
+              <div
+                class="h-full bg-white dark:bg-gray-100 transition-all duration-200 ease-out"
+                :style="{ width: `${videoStore.downloadProgress}%` }"
+              ></div>
+            </div>
+
+            <!-- Content Container -->
+            <div class="relative z-10 flex items-center justify-center gap-2">
+              <!-- Case 1: Preparing -->
+              <template v-if="videoStore.downloadStatus === 'preparing'">
+                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Preparing download...</span>
+              </template>
+
+              <!-- Case 2: Downloading with Progress -->
+              <template v-else-if="videoStore.downloadStatus === 'downloading'">
+                <Icon icon="ri:download-2-line" class="w-5 h-5 animate-bounce" />
+                <span class="font-semibold">Downloading... {{ videoStore.downloadProgress }}%</span>
+                <span v-if="videoStore.downloadTotal > 0" class="text-xs opacity-85 font-mono hidden sm:inline">
+                  ({{ formatBytes(videoStore.downloadLoaded) }} / {{ formatBytes(videoStore.downloadTotal) }})
+                </span>
+                <span v-else-if="videoStore.downloadLoaded > 0" class="text-xs opacity-85 font-mono hidden sm:inline">
+                  ({{ formatBytes(videoStore.downloadLoaded) }})
+                </span>
+              </template>
+
+              <!-- Case 3: Completed Success -->
+              <template v-else-if="videoStore.downloadStatus === 'completed'">
+                <Icon icon="ri:checkbox-circle-fill" class="w-5 h-5 text-emerald-200" />
+                <span class="font-semibold">Downloaded Successfully!</span>
+              </template>
+
+              <!-- Case 4: Failed -->
+              <template v-else-if="videoStore.downloadStatus === 'failed'">
+                <Icon icon="ri:error-warning-fill" class="w-5 h-5 text-amber-200" />
+                <span>Download Failed — Click to Retry</span>
+              </template>
+
+              <!-- Case 5: Parsing in progress -->
+              <template v-else-if="videoStore.isLoading">
+                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Parsing Video...</span>
+              </template>
+
+              <!-- Case 6: URL entered but not parsed -->
+              <template v-else-if="videoStore.videoUrl && !videoStore.videoInfo">
+                <Icon icon="ri:search-line" class="w-5 h-5" />
+                <span>Parse Video</span>
+              </template>
+
+              <!-- Case 7: Parsed, but no format selected -->
+              <template v-else-if="videoStore.videoInfo && !selectedFormat">
+                <Icon icon="ri:file-list-3-line" class="w-5 h-5" />
+                <span>Select a Format</span>
+              </template>
+
+              <!-- Case 8: Ready to Download -->
+              <template v-else-if="selectedFormat">
+                <Icon icon="ri:download-cloud-2-line" class="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                <span>Download {{ selectedFormat.label || `${selectedFormat.height || 720}p ${selectedFormat.ext.toUpperCase()}` }}</span>
+                <span v-if="selectedFormat.filesize" class="text-xs bg-white/20 px-2 py-0.5 rounded-full font-normal opacity-90 hidden sm:inline">
+                  {{ formatBytes(selectedFormat.filesize) }}
+                </span>
+              </template>
+
+              <!-- Case 9: Empty URL initial state -->
+              <template v-else>
+                <Icon icon="ri:link" class="w-5 h-5 opacity-70" />
+                <span>Enter Video URL</span>
+              </template>
+            </div>
           </button>
 
           <!-- Terms -->
@@ -229,7 +362,8 @@ import { Icon } from '@iconify/vue'
 import { useVideoStore } from '../stores/video'
 import { useUserStore } from '../stores/user'
 import type { VideoFormat } from '../types/video'
-import {isValidUrl, extractDouyinUrl } from '../utils/url'
+import { isValidUrl, extractDouyinUrl } from '../utils/url'
+import { formatBytes } from '../utils/format'
 import Logo from '../components/logo.vue'
 import Navigation from '../components/layout/Navigation.vue'
 import BackgroundEffect from '../components/BackgroundEffect.vue'
@@ -335,13 +469,52 @@ const handleParse = async () => {
   }
 }
 
-// 修改下载按钮的禁用条件
-const isDownloadDisabled = computed(() => {
-  return !videoStore.videoInfo ||
-    !selectedFormat.value ||
-    videoStore.isLoading ||
-    videoStore.downloadStatus === 'downloading'
+const isBusy = computed(() => {
+  return videoStore.downloadStatus === 'preparing' || videoStore.downloadStatus === 'downloading'
 })
+
+const isButtonDisabled = computed(() => {
+  if (isBusy.value) return true
+  if (videoStore.isLoading) return true
+  if (!videoStore.videoUrl) return true
+  if (videoStore.videoInfo && !selectedFormat.value) return true
+  return false
+})
+
+const buttonThemeClass = computed(() => {
+  if (videoStore.downloadStatus === 'completed') {
+    return 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
+  }
+  if (videoStore.downloadStatus === 'failed') {
+    return 'bg-red-700 hover:bg-red-800 text-white shadow-red-700/20 cursor-pointer'
+  }
+  if (isBusy.value) {
+    return 'bg-gradient-to-r from-[#d92222] to-[#f32b2b] text-white cursor-wait'
+  }
+  if (videoStore.isLoading) {
+    return 'bg-[#f32b2b]/70 text-white cursor-wait'
+  }
+  if (!videoStore.videoUrl) {
+    return 'bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-300 dark:border-gray-700 cursor-not-allowed shadow-none'
+  }
+  if (videoStore.videoInfo && !selectedFormat.value) {
+    return 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
+  }
+  return 'bg-gradient-to-r from-[#f32b2b] to-[#ff4b4b] hover:from-[#e02020] hover:to-[#f32b2b] text-white hover:shadow-lg hover:shadow-[#f32b2b]/25 cursor-pointer active:scale-[0.99]'
+})
+
+const handleButtonClick = async () => {
+  if (isBusy.value || videoStore.isLoading) return
+
+  // URL已填写但尚未解析时，点击大按钮直接触发解析
+  if (videoStore.videoUrl && !videoStore.videoInfo) {
+    await handleParse()
+    return
+  }
+
+  // 正常下载流程
+  await handleDownload()
+}
 
 const parseIcon = 'ri:search-line'
 const clearIcon = 'ri:close-circle-fill'

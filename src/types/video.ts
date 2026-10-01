@@ -51,7 +51,7 @@ export interface Video extends VideoBase {
   updated_at: string
 }
 
-export type VideoStatus = 'idle' | 'downloading' | 'completed' | 'failed'
+export type VideoStatus = 'idle' | 'preparing' | 'downloading' | 'completed' | 'failed'
 
 export interface VideoDownloadBase {
   video_url: string

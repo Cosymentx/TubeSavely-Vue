@@ -27,19 +27,24 @@ export const createVideoService = (api: AxiosInstance) => ({
   },
 
   download: (
-    url: string, 
-    options: VideoDownloadOptions, 
-    onProgress?: (progress: number) => void
+    url: string,
+    options: VideoDownloadOptions,
+    onProgress?: (progress: number, loaded: number, total: number) => void
   ): Promise<Blob> => {
-    return api.post<Blob>('/videos/download', 
+    return api.post<Blob>('/videos/download',
       { url, ...options },
       {
         responseType: 'blob',
         timeout: 300000,
         onDownloadProgress: (progressEvent) => {
-          if (progressEvent.total && onProgress) {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            onProgress(progress)
+          if (onProgress) {
+            const loaded = progressEvent.loaded || 0
+            const total = progressEvent.total || 0
+            let progress = 0
+            if (total > 0) {
+              progress = Math.min(100, Math.round((loaded * 100) / total))
+            }
+            onProgress(progress, loaded, total)
           }
         }
       }

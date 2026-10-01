@@ -19,6 +19,8 @@ export const useVideoStore = defineStore('video', () => {
   const error = ref('')
   const videoInfo = ref<VideoCreate | null>(null)
   const downloadProgress = ref(0)
+  const downloadLoaded = ref(0)
+  const downloadTotal = ref(0)
   const downloadStatus = ref<VideoStatus>('idle')
   const availableFormats = ref<VideoFormat[]>([])
   const videoService = createVideoService(api)
@@ -26,6 +28,8 @@ export const useVideoStore = defineStore('video', () => {
   const resetState = () => {
     error.value = ''
     downloadProgress.value = 0
+    downloadLoaded.value = 0
+    downloadTotal.value = 0
     downloadStatus.value = 'idle'
   }
 
@@ -110,16 +114,38 @@ export const useVideoStore = defineStore('video', () => {
     if (!videoInfo.value?.url || !selectedFormat.url) return
 
     try {
-      downloadStatus.value = 'downloading'
+      downloadStatus.value = 'preparing'
       downloadProgress.value = 0
+      downloadLoaded.value = 0
+      downloadTotal.value = selectedFormat.filesize || 0
 
       // Credits are charged once on successful parsing. Download uses that result.
-      const blob = await videoService.download(videoInfo.value.url, {
-        format_id: selectedFormat.format_id,
-        quality: selectedFormat.quality
-      }, progress => {
-        downloadProgress.value = progress
-      })
+      const blob = await videoService.download(
+        videoInfo.value.url,
+        {
+          format_id: selectedFormat.format_id,
+          quality: selectedFormat.quality
+        },
+        (progress, loaded, total) => {
+          downloadStatus.value = 'downloading'
+          downloadLoaded.value = loaded
+          if (total > 0) {
+            downloadTotal.value = total
+            downloadProgress.value = progress
+          } else if (selectedFormat.filesize && selectedFormat.filesize > 0) {
+            downloadTotal.value = selectedFormat.filesize
+            downloadProgress.value = Math.min(99, Math.round((loaded * 100) / selectedFormat.filesize))
+          } else {
+            // 估算平滑进度（当未知总体大小时）
+            downloadProgress.value = Math.min(95, Math.round((1 - Math.exp(-loaded / (15 * 1024 * 1024))) * 100))
+          }
+        }
+      )
+
+      downloadProgress.value = 100
+      if (downloadTotal.value === 0 && downloadLoaded.value > 0) {
+        downloadTotal.value = downloadLoaded.value
+      }
 
       const fileName = (videoInfo.value?.title || 'video').replace(/[\\/:*?"<>|]/g, '_')
       const extension = selectedFormat.ext || 'mp4'
@@ -136,11 +162,37 @@ export const useVideoStore = defineStore('video', () => {
 
       downloadStatus.value = 'completed'
       toastStore.showToast('Download completed successfully!', 'success')
-    } catch (err) {
-      const errorMessage = getErrorMessage(err)
+
+      // 下载完成后2.5秒自动重置回常态
+      setTimeout(() => {
+        if (downloadStatus.value === 'completed') {
+          downloadStatus.value = 'idle'
+          downloadProgress.value = 0
+          downloadLoaded.value = 0
+          downloadTotal.value = 0
+        }
+      }, 2500)
+    } catch (err: any) {
+      let errorMessage = getErrorMessage(err)
+      if (err?.response?.data instanceof Blob) {
+        try {
+          const text = await err.response.data.text()
+          const json = JSON.parse(text)
+          errorMessage = json.detail || json.message || json.msg || errorMessage
+        } catch {
+          // ignore
+        }
+      }
       error.value = errorMessage
       downloadStatus.value = 'failed'
       toastStore.showToast(errorMessage, 'error')
+
+      // 失败后3.5秒重置回常态
+      setTimeout(() => {
+        if (downloadStatus.value === 'failed') {
+          downloadStatus.value = 'idle'
+        }
+      }, 3500)
     }
   }
   const parseVideo = async () => {
@@ -172,6 +224,8 @@ export const useVideoStore = defineStore('video', () => {
     error,
     videoInfo,
     downloadProgress,
+    downloadLoaded,
+    downloadTotal,
     downloadStatus,
     availableFormats,
     setVideoUrl,

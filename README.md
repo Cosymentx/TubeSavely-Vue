@@ -29,7 +29,7 @@ TubeSavely 是一套完整的跨平台音视频解析与下载解决方案，由
 | :--- | :--- | :--- | :--- | :--- |
 | **TubeSavely** | Flutter 3 + Dart | iOS / Android / Windows / macOS / Linux 客户端，提供原生交互与桌面端视频转换/压缩 | [![GitHub](https://img.shields.io/badge/GitHub-TubeSavely-02569B?logo=flutter)](https://github.com/Cosymentx/TubeSavely) | [Releases 下载](https://github.com/Cosymentx/TubeSavely/releases) |
 | **TubeSavely-Vue** (当前仓库) | Vue 3 + TypeScript + Vite | 现代化响应式 Web 端，无须安装即开即用，支持在线解析、格式筛选与下载 | [![GitHub](https://img.shields.io/badge/GitHub-TubeSavely--Vue-4FC08D?logo=vuedotjs)](https://github.com/Cosymentx/TubeSavely-Vue) | [访问 Web 演示站](https://tube-savely-vue.vercel.app) |
-| **TubeSavely-Server** | Python 3 + FastAPI + yt-dlp | 核心音视频解析引擎、任务队列、多平台提取、支付积分与下载分发 API | [![GitHub](https://img.shields.io/badge/GitHub-TubeSavely--Server-3776AB?logo=python)](https://github.com/Cosymentx/TubeSavely-Server) | [Swagger API 文档](https://tube-savely-server.vercel.app/docs) |
+| **TubeSavely-Server** | Python 3 + FastAPI + yt-dlp | 核心音视频解析引擎、任务队列、多平台提取、支付积分与下载分发 API | [![GitHub](https://img.shields.io/badge/GitHub-TubeSavely--Server-3776AB?logo=python)](https://github.com/Cosymentx/TubeSavely-Server) | [Swagger API 文档](https://tubesavely-server.vercel.app/docs) |
 
 ---
 

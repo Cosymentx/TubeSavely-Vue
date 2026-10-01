@@ -124,6 +124,7 @@ export const useVideoStore = defineStore('video', () => {
         videoInfo.value.url,
         {
           format_id: selectedFormat.format_id,
+          include_audio: format.value !== 'mute',
           quality: selectedFormat.quality
         },
         (progress, loaded, total) => {

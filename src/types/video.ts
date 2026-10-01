@@ -71,6 +71,7 @@ export interface VideoDownload extends VideoDownloadBase {
 // 下载选项
 export interface VideoDownloadOptions {
   format_id: string
+  include_audio?: boolean
   quality?: string
   output_dir?: string
   filename?: string

@@ -2,60 +2,88 @@ import type { AxiosInstance } from 'axios'
 import type { ToastStore } from '../stores/toast'
 
 export const createInterceptors = (api: AxiosInstance, toastStore: ToastStore) => {
+  let refreshPromise: Promise<string | null> | null = null
 
-  // Request interceptor
   api.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('token')
-      // 确保 headers 对象存在
       config.headers = config.headers || {}
-      
-      // 对所有非登录请求添加认证头
-      if (token && !config.url?.includes('/auth/login')) {
-        // 设置认证头
+
+      const isAuthBootstrap =
+        config.url?.includes('/auth/login') ||
+        config.url?.includes('/auth/register') ||
+        config.url?.includes('/auth/refresh')
+
+      if (token && !isAuthBootstrap) {
         config.headers.Authorization = `Bearer ${token}`
       }
 
-      // 全局请求配置
-      config.maxRedirects = 0  // 禁止自动重定向
-      config.withCredentials = false  // 使用 Bearer Token 鉴权，无需跨域 Cookie 凭证
-      config.validateStatus = function (status) {
-        // 自定义响应状态码的验证
-        return status >= 200 && status < 300 || status === 307  // 允许307状态码
-      }
-      
+      config.maxRedirects = 0
+      config.withCredentials = true
+      config.validateStatus = (status) =>
+        (status >= 200 && status < 300) || status === 307
+
       return config
     },
-    (error) => {
-      return Promise.reject(error)
-    }
+    (error) => Promise.reject(error)
   )
 
-  // Response interceptor
   api.interceptors.response.use(
-    (response) => {
-      return response
-    },
-    (error) => {
-      let errorMessage = ''
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config as typeof error.config & { _retry?: boolean }
+      const status = error.response?.status
+      const url = originalRequest?.url || ''
+      const isRefreshRequest = url.includes('/auth/refresh')
+      const isLoginRequest = url.includes('/auth/login') || url.includes('/auth/register')
 
-      if (error.response) {
-        // Handle 401 unauthorized error
-        if (error.response.status === 401) {
-          localStorage.removeItem('token')
-          localStorage.removeItem('userState')
-          errorMessage = error.response.data?.detail || error.response.data?.message || 'Session expired, please login again'
-        } else {
-          errorMessage = error.response.data?.detail || error.response.data?.message || 'Server error'
+      if (status === 401 && !isRefreshRequest && !isLoginRequest && originalRequest && !originalRequest._retry) {
+        originalRequest._retry = true
+
+        try {
+          if (!refreshPromise) {
+            refreshPromise = api.post('/auth/refresh')
+              .then((response) => {
+                const token = response.data?.data?.access_token as string | undefined
+                if (!token) return null
+                localStorage.setItem('token', token)
+                if (response.data?.data?.user) {
+                  localStorage.setItem('userState', JSON.stringify(response.data.data.user))
+                }
+                return token
+              })
+              .finally(() => {
+                refreshPromise = null
+              })
+          }
+
+          const newToken = await refreshPromise
+          if (newToken) {
+            originalRequest.headers = originalRequest.headers || {}
+            originalRequest.headers.Authorization = `Bearer ${newToken}`
+            return api(originalRequest)
+          }
+        } catch {
+          // Fall through to the normal expired-session cleanup.
         }
+      }
+
+      let errorMessage = ''
+      if (status === 401) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('userState')
+        errorMessage = error.response?.data?.detail || error.response?.data?.msg || 'Session expired, please login again'
+      } else if (error.response) {
+        errorMessage = error.response.data?.detail || error.response.data?.msg || error.response.data?.message || 'Server error'
       } else if (error.request) {
         errorMessage = 'Network error, please check your connection'
       } else {
         errorMessage = error.message || 'Request configuration error'
       }
 
-      toastStore.showToast(errorMessage, 'error')
-
+      if (!isRefreshRequest) {
+        toastStore.showToast(errorMessage, 'error')
+      }
       return Promise.reject(error)
     }
   )

@@ -364,6 +364,7 @@ import { useUserStore } from '../stores/user'
 import type { VideoFormat } from '../types/video'
 import { isValidUrl, extractDouyinUrl } from '../utils/url'
 import { formatBytes } from '../utils/format'
+import { deduplicateFormatsForMode } from '../utils/video'
 import Logo from '../components/logo.vue'
 import Navigation from '../components/layout/Navigation.vue'
 import BackgroundEffect from '../components/BackgroundEffect.vue'
@@ -555,37 +556,37 @@ onUnmounted(() => {
 const filteredFormats = computed(() => {
   if (!videoStore.videoInfo?.formats) return []
 
-  return videoStore.videoInfo.formats
-    .filter(format => {
-      // 根据选择的格式类型进行筛选
-      if (videoStore.format === 'auto') {
-        // 自动模式：选择同时包含视频和音频的mp4格式，排除m3u8格式
-        return format.ext === 'mp4' &&
-          format.url &&
-          !format.url.includes('.m3u8')
-      } else if (videoStore.format === 'audio') {
-        // 音频模式：选择只有音频的格式
-        return format.acodec !== 'none' && format.vcodec === 'none' && !!format.url
-      } else if (videoStore.format === 'mute') {
-        // 无声视频模式：选择只有视频没有音频的格式
-        return format.vcodec !== 'none' && format.acodec === 'none' &&
-          format.url && !format.url.includes('.m3u8')
-      }
-      return false
-    })
+  const mode = videoStore.format as 'auto' | 'audio' | 'mute'
+  const candidates = videoStore.videoInfo.formats.filter(format => {
+    if (mode === 'auto') {
+      return format.vcodec !== 'none' &&
+        format.ext === 'mp4' &&
+        !!format.url &&
+        !format.url.includes('.m3u8')
+    } else if (mode === 'audio') {
+      return format.acodec !== 'none' &&
+        format.vcodec === 'none' &&
+        !!format.url
+    } else if (mode === 'mute') {
+      return format.vcodec !== 'none' &&
+        format.acodec === 'none' &&
+        !!format.url &&
+        !format.url.includes('.m3u8')
+    }
+    return false
+  })
+
+  return deduplicateFormatsForMode(candidates, mode)
     .sort((a, b) => {
-      if (videoStore.format === 'audio') {
-        // 音频按比特率从高到低排序
+      if (mode === 'audio') {
         return (b.tbr || 0) - (a.tbr || 0)
-      } else {
-        // 视频按分辨率从高到低排序
-        const resA = (a.height || 0) * (a.width || 0)
-        const resB = (b.height || 0) * (b.width || 0)
-        return resB - resA
       }
+      const resA = (a.height || 0) * (a.width || 0)
+      const resB = (b.height || 0) * (b.width || 0)
+      if (resB !== resA) return resB - resA
+      return (b.fps || 0) - (a.fps || 0)
     })
 })
-
 const visibleFormats = computed(() => showAllFormats.value ? filteredFormats.value : filteredFormats.value.slice(0, 4))
 
 watch([() => videoStore.videoInfo, () => videoStore.format], () => { showAllFormats.value = false })

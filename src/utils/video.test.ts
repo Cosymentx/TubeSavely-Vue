@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeFormats, requireMediaBlob } from './video'
+import { deduplicateFormatsForMode, normalizeFormats, requireMediaBlob } from './video'
 
 describe('backend media response mapping', () => {
   it('preserves dimensions and backend preference for equal-quality mirrors', () => {
@@ -26,6 +26,15 @@ describe('backend media response mapping', () => {
     ])
     expect(result).toHaveLength(2)
     expect(result[0].label).toContain('2160p 60fps HDR AV1 MP4')
+  })
+
+  it('AUTO prefers a progressive format over an equivalent video-only format', () => {
+    const formats = normalizeFormats([
+      { format_id: 'video-only', ext: 'mp4', quality: '', width: 1920, height: 1080, fps: 30, vcodec: 'avc1', acodec: 'none', url: 'https://example.com/video' },
+      { format_id: 'progressive', ext: 'mp4', quality: '', width: 1920, height: 1080, fps: 30, vcodec: 'avc1', acodec: 'mp4a', url: 'https://example.com/progressive' },
+    ])
+    expect(deduplicateFormatsForMode(formats, 'auto').map(item => item.format_id)).toEqual(['progressive'])
+    expect(deduplicateFormatsForMode(formats.filter(item => item.acodec === 'none'), 'mute').map(item => item.format_id)).toEqual(['video-only'])
   })
 
   it('keeps valid formats with unknown dimensions', () => {

@@ -17,6 +17,7 @@ export interface VideoFormat extends VideoFormatBase {
   acodec?: string
   tbr?: number
   fps?: number
+  dynamic_range?: string
 }
 
 export interface VideoBase {

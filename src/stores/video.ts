@@ -24,6 +24,7 @@ export const useVideoStore = defineStore('video', () => {
   const downloadStatus = ref<VideoStatus>('idle')
   const availableFormats = ref<VideoFormat[]>([])
   const videoService = createVideoService(api)
+  let downloadController: AbortController | null = null
 
   const resetState = () => {
     error.value = ''
@@ -114,6 +115,9 @@ export const useVideoStore = defineStore('video', () => {
     if (!videoInfo.value?.url || !selectedFormat.url) return
 
     try {
+      downloadController?.abort()
+      const controller = new AbortController()
+      downloadController = controller
       downloadStatus.value = 'preparing'
       downloadProgress.value = 0
       downloadLoaded.value = 0
@@ -140,7 +144,8 @@ export const useVideoStore = defineStore('video', () => {
             // 估算平滑进度（当未知总体大小时）
             downloadProgress.value = Math.min(95, Math.round((1 - Math.exp(-loaded / (15 * 1024 * 1024))) * 100))
           }
-        }
+        },
+        controller.signal
       )
 
       downloadProgress.value = 100
@@ -174,6 +179,14 @@ export const useVideoStore = defineStore('video', () => {
         }
       }, 2500)
     } catch (err: any) {
+      if (err?.code === 'ERR_CANCELED' || err?.name === 'CanceledError' || err?.name === 'AbortError') {
+        downloadStatus.value = 'idle'
+        downloadProgress.value = 0
+        downloadLoaded.value = 0
+        downloadTotal.value = 0
+        return
+      }
+
       let errorMessage = getErrorMessage(err)
       if (err?.response?.data instanceof Blob) {
         try {
@@ -196,6 +209,16 @@ export const useVideoStore = defineStore('video', () => {
       }, 3500)
     }
   }
+  const cancelDownload = () => {
+    if (!downloadController) return
+    downloadController.abort()
+    downloadController = null
+    downloadStatus.value = 'idle'
+    downloadProgress.value = 0
+    downloadLoaded.value = 0
+    downloadTotal.value = 0
+  }
+
   const parseVideo = async () => {
     if (!videoUrl.value) return
     await fetchVideoInfo(videoUrl.value)
@@ -232,6 +255,7 @@ export const useVideoStore = defineStore('video', () => {
     setVideoUrl,
     setFormat,
     downloadVideo,
+    cancelDownload,
     parseVideo,
     resetState,
     getVideoHistory,

@@ -201,6 +201,13 @@
                   <span class="font-bold text-[#f32b2b] font-mono text-sm">
                     {{ videoStore.downloadProgress }}%
                   </span>
+                  <button
+                    type="button"
+                    class="ml-1 px-2 py-1 rounded-md border border-[#f32b2b]/30 text-[#f32b2b] hover:bg-[#f32b2b]/10 transition-colors"
+                    @click="videoStore.cancelDownload"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
 

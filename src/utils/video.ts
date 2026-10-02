@@ -87,6 +87,44 @@ export function normalizeFormats(formats: VideoFormat[]): VideoFormat[] {
     })
 }
 
+export function deduplicateFormatsForMode(
+  formats: VideoFormat[],
+  mode: 'auto' | 'audio' | 'mute',
+): VideoFormat[] {
+  const preferred = new Map<string, VideoFormat>()
+
+  for (const format of formats) {
+    const resolution = displayResolution(format) || 0
+    const fps = format.fps ? Math.round(format.fps) : 0
+    const key = JSON.stringify([
+      resolution,
+      fps,
+      codecFamily(format.vcodec),
+      dynamicRange(format),
+      format.ext.toLowerCase(),
+    ])
+
+    const current = preferred.get(key)
+    if (!current) {
+      preferred.set(key, format)
+      continue
+    }
+
+    const currentHasAudio = codecFamily(current.acodec) !== 'none'
+    const candidateHasAudio = codecFamily(format.acodec) !== 'none'
+    if (mode === 'auto' && candidateHasAudio !== currentHasAudio) {
+      if (candidateHasAudio) preferred.set(key, format)
+      continue
+    }
+
+    if (preferenceScore(format) > preferenceScore(current)) {
+      preferred.set(key, format)
+    }
+  }
+
+  return [...preferred.values()]
+}
+
 export async function requireMediaBlob(blob: Blob): Promise<Blob> {
   if (/json|text\/|html/i.test(blob.type)) {
     let message = 'The server did not return a media file.'

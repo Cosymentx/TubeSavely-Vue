@@ -67,7 +67,7 @@
               </div>
 
               <input v-model="videoStore.videoUrl" type="text" placeholder="Paste video URL here..."
-                :disabled="videoStore.isLoading || videoStore.downloadStatus === 'downloading'"
+                :disabled="videoStore.isLoading || isBusy"
                 class="flex-1 form-input bg-white dark:bg-gray-800 text-gray-800 dark:text-white pr-[120px]" />
               <div class="absolute right-2 flex items-center space-x-2">
                 <button v-if="videoStore.videoUrl" @click="videoStore.setVideoUrl('')"
@@ -79,7 +79,7 @@
                   <Icon :icon="pasteIcon" class="w-4 h-4" />
                   <span class="text-sm font-medium">Paste</span>
                 </button>
-                <button v-else @click="handleParse" :disabled="videoStore.isLoading"
+                <button v-else @click="handleParse" :disabled="videoStore.isLoading || isBusy"
                   class="flex items-center gap-1.5 px-3 py-1.5 bg-[#f32b2b]/5 dark:bg-[#f32b2b]/10 hover:bg-[#f32b2b]/10 dark:hover:bg-[#f32b2b]/20 text-[#f32b2b] rounded-lg transition-colors disabled:opacity-50">
                   <Icon v-if="!videoStore.isLoading" :icon="parseIcon" class="w-4 h-4" />
                   <div v-else class="w-4 h-4 border-2 border-[#f32b2b]/30 border-t-[#f32b2b] rounded-full animate-spin">

@@ -36,6 +36,7 @@ export const createVideoService = (api: AxiosInstance) => ({
       {
         responseType: 'blob',
         timeout: 300000,
+        signal,
         onDownloadProgress: (progressEvent) => {
           if (onProgress) {
             const loaded = progressEvent.loaded || 0

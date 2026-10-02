@@ -29,7 +29,8 @@ export const createVideoService = (api: AxiosInstance) => ({
   download: (
     url: string,
     options: VideoDownloadOptions,
-    onProgress?: (progress: number, loaded: number, total: number) => void
+    onProgress?: (progress: number, loaded: number, total: number) => void,
+    signal?: AbortSignal
   ): Promise<Blob> => {
     return api.post<Blob>('/videos/download',
       { url, ...options },

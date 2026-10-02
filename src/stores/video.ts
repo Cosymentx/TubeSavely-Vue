@@ -114,10 +114,11 @@ export const useVideoStore = defineStore('video', () => {
 
     if (!videoInfo.value?.url || !selectedFormat.url) return
 
+    downloadController?.abort()
+    const controller = new AbortController()
+    downloadController = controller
+
     try {
-      downloadController?.abort()
-      const controller = new AbortController()
-      downloadController = controller
       downloadStatus.value = 'preparing'
       downloadProgress.value = 0
       downloadLoaded.value = 0

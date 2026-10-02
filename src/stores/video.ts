@@ -207,6 +207,10 @@ export const useVideoStore = defineStore('video', () => {
           downloadStatus.value = 'idle'
         }
       }, 3500)
+    } finally {
+      if (downloadController === controller) {
+        downloadController = null
+      }
     }
   }
   const cancelDownload = () => {
